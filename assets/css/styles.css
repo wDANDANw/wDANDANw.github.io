@@ -589,6 +589,74 @@ input:checked + .slider:before {
 -ms-transform: translateX(26px);
 transform: translateX(26px);
 }
+
+.navigation {
+    background: #333;
+    position: fixed;
+    width:100%;
+}
+
+.nav ul{
+    background: #333;
+    margin:0;
+    padding: 0;
+    position: relative;
+    top: 0;
+}
+.nav li {
+    display: inline-block;
+    list-style: none;
+    margin:0;
+}
+.nav li a {
+    color: #ddd;
+    display: block;
+    font-family: "Lucida Sans Unicode", "Lucida Grande", sans-serif;
+    font-size:0.8em;
+    padding: 10px 20px;
+    text-decoration: none;
+    text-shadow: 0 -1px 0 rgba(0, 0, 0, 0.5);
+}
+.nav li a:hover, .dropdown:hover {
+    background: #d90075;
+    color: #fff;
+}
+
+.nav dropbtn {
+    display: inline-block;
+    color: white;
+    text-align: center;
+    padding: 14px 16px;
+    text-decoration: none;
+}
+
+.nav li.dropdown {
+    display: inline-block;
+}
+
+.nav .dropdown-content {
+    display: none;
+    position: absolute;
+    background-color: #f9f9f9;
+    min-width: 160px;
+    box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+    z-index: 1;
+}
+
+.nav .dropdown-content a {
+    color: black;
+    padding: 12px 16px;
+    text-decoration: none;
+    display: block;
+    text-align: left;
+}
+
+.nav .dropdown-content a:hover {background-color:  #d90075;}
+
+.nav .dropdown:hover .dropdown-content {
+    display: block;
+}
+
 /* @media queries */
 /* Tablets (Mostly iPads, 992px and below) */
 @media only screen and (max-width: 1425px){
