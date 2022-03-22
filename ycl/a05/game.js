@@ -1,3 +1,12 @@
+// Yongcheng Liu
+// Hot Table
+// Referenced rain toy
+// Mod1: Changed the grid to 7x7
+// Mod2: Automatic dropping blocks
+// Mod3: Click to delete blocks
+// Mod4: If blocks drop to ground you fail
+// Mod5: Headline text
+
 /*
 game.js for Perlenspiel 3.3.x
 Last revision: 2022-03-15 (BM)
