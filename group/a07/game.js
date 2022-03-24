@@ -131,7 +131,7 @@ PS.init = function( system, options ) {
 
 	lastx = PAINT.PALETTE_COLUM;
 	lasty = PAINT.HEIGHT - 1; // faster if saved in local var
-	for ( i = 0; i < lastx; i += 1 ) {
+	for ( i = 0; i < lasty; i += 1 ) {
 		color = PAINT.COLORS[ i ];
 		PS.color( lastx, i, color ); // set visible color
 		PS.data( lastx, i, color ); // also store color as bead data
