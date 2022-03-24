@@ -56,8 +56,8 @@ var PAINT = {
 	WIDTH: 9, // width of grid (one extra column for palette)
 	HEIGHT: 17, // height of grid
 	PALETTE_COLUM: 8, // column occupied by palette
-	WHITE: 7, // x-position of white in palette
-	ERASE_X: 8, // x-position of X in palette
+	WHITE: 15, // y-position of white in palette
+	ERASE_X: 16, // y-position of X in palette
 
 	// The palette colors, scientifically chosen! :)
 
@@ -86,9 +86,9 @@ var PAINT = {
 
 		// activate border if changing selection
 
-		if ( x !== PAINT.current )	{
+		if ( y !== PAINT.current )	{
 			PS.border(PAINT.current, PAINT.HEIGHT - 1, 0); // turn off previous border
-			PS.border( x, y, 3 );
+			PS.border( x, y, 2 );
 			PAINT.current = x;
 			PAINT.color = data; // set current color from color stored in bead data
 			PS.audioPlay( "fx_click" );
@@ -144,7 +144,7 @@ PS.init = function( system, options ) {
 
 	// Set up reset button
 
-	PAINT.ERASE_X = lastx; // remember the x-position
+	PAINT.ERASE_Y = lasty; // remember the x-position
 	PS.glyphColor( lastx, lasty, PS.COLOR_BLACK );
 	PS.glyph( lastx, lasty, "X" );
 	PS.exec( lastx, lasty, PAINT.reset ); // call PAINT.Reset when clicked
@@ -233,7 +233,7 @@ PS.enter = function( x, y, data, options ) {
 	else
 	{
 		PAINT.dragging = false; // stop dragging if over palette
-		if ( x === PAINT.ERASE_X )
+		if ( y === PAINT.ERASE_Y )
 		{
 			PAINT.prompt = false;
 			PS.statusText( "Click X to erase painting" );
