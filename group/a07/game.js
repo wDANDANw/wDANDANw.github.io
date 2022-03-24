@@ -111,6 +111,9 @@ var PAINT = {
 	}
 };
 
+
+
+
 PS.init = function( system, options ) {
 	"use strict";
 	var i, lastx, lasty, color;
@@ -130,9 +133,9 @@ PS.init = function( system, options ) {
 	lasty = PAINT.HEIGHT - 1; // faster if saved in local var
 	for ( i = 0; i < lastx; i += 1 ) {
 		color = PAINT.COLORS[ i ];
-		PS.color( i, lasty, color ); // set visible color
-		PS.data( i, lasty, color ); // also store color as bead data
-		PS.exec( i, lasty, PAINT.select ); // call PAINT.select when clicked
+		PS.color( lastx, i, color ); // set visible color
+		PS.data( lastx, i, color ); // also store color as bead data
+		PS.exec( lastx, i, PAINT.select ); // call PAINT.select when clicked
 
 		// Set border color according to palette position
 
