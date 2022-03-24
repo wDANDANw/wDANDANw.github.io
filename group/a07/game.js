@@ -104,7 +104,7 @@ var PAINT = {
 
 		PAINT.dragging = false;
 		PAINT.underColor = 0xDCF5FF;
-		for ( i = 0; i < PAINT.PALETTE_COLUMN; i += 1 )	{
+		for ( i = 0; i < PAINT.PALETTE_COLUM; i += 1 )	{
 			PS.color( PS.ALL, i, PS.COLOR_WHITE );
 		}
 		PS.audioPlay( "fx_pop" );
@@ -126,7 +126,7 @@ PS.init = function( system, options ) {
 
 	// Draw palette
 
-	lastx = PAINT.PALETTE_COLUMN;
+	lastx = PAINT.PALETTE_COLUM;
 	lasty = PAINT.HEIGHT - 1; // faster if saved in local var
 	for ( i = 0; i < lastx; i += 1 ) {
 		color = PAINT.COLORS[ i ];
@@ -156,7 +156,7 @@ PS.init = function( system, options ) {
 
 	// Start with white selected
 
-	PS.border( PAINT.WHITE, PAINT.PALETTE_COLUMN, 2 );
+	PS.border( PAINT.WHITE, PAINT.PALETTE_COLUM, 2 );
 	PAINT.current = PAINT.WHITE;
 	PAINT.color = PS.COLOR_WHITE;
 
@@ -190,7 +190,7 @@ This function doesn't have to do anything. Any value returned is ignored.
 PS.touch = function( x, y, data, options ) {
 	"use strict";
 
-	if ( x < PAINT.PALETTE_COLUMN )
+	if ( x < PAINT.PALETTE_COLUM )
 	{
 		PAINT.dragging = true;
 		PAINT.underColor = PAINT.color;
@@ -227,7 +227,7 @@ This function doesn't have to do anything. Any value returned is ignored.
 PS.enter = function( x, y, data, options ) {
 	"use strict";
 
-	if ( x < PAINT.PALETTE_COLUMN )
+	if ( x < PAINT.PALETTE_COLUM )
 	{
 		PAINT.underColor = PS.color( x, y );
 		PS.color( x, y, PAINT.color );
@@ -268,7 +268,7 @@ PS.exit = function( x, y, data, options ) {
 		PS.statusText("Click to select colors, click/drag to paint");
 	}
 
-	if ( x < PAINT.PALETTE_COLUMN )
+	if ( x < PAINT.PALETTE_COLUM )
 	{
 		PS.color( x, y, PAINT.underColor );
 	}
