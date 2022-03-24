@@ -56,14 +56,14 @@ var PAINT = {
 	WIDTH: 9, // width of grid (one extra column for palette)
 	HEIGHT: 17, // height of grid
 	PALETTE_COLUM: 8, // column occupied by palette
-	WHITE: 15, // y-position of white in palette
+	WHITE: 0, // y-position of white in palette
 	ERASE_X: 16, // y-position of X in palette
 
 	// The palette colors, scientifically chosen! :)
 
 	COLORS: [
-		0x000000, 0x1F246A, 0x8A1181, 0xD14444,
-		0x2CA53E, 0x68CBCB, 0xE3C72D, 0xDCF5FF,
+		0xFFFFFF, 0xE3C72D, 0x68CBCB, 0x2CA53E,
+		0xD14444, 0x8A1181, 0x1F246A, 0x000000
 	],
 
 	// VARIABLES
@@ -73,10 +73,8 @@ var PAINT = {
 	color: 0xDCF5FF, // color of current palette selection
 	underColor: 0xDCF5FF, // color of bead under the brush
 	dragging: false, // true if dragging brush
-	prompt: false, // true if instructions displayed
 
 	// FUNCTIONS
-	// Function names are lower case with camelCaps
 
 	// PAINT.select ( x, y, data )
 	// Selects a new color for painting
@@ -96,7 +94,7 @@ var PAINT = {
 	},
 
 	// PAINT.reset ()
-	// Clears the canvas, except the bottom row
+	// Clears the canvas, except the rightmost row
 
 	reset : function () {
 		"use strict";
@@ -121,6 +119,8 @@ PS.init = function( system, options ) {
 	PS.gridSize( PAINT.WIDTH, PAINT.HEIGHT );
 	PS.gridColor( 0x303030 );
 	PS.border( PS.ALL, PS.ALL, 0 ); // disable all borders
+	PS.statusColor( 0x303030 );
+
 
 	// Load and lock sounds
 
@@ -151,7 +151,7 @@ PS.init = function( system, options ) {
 
 	// Start with white selected
 
-	//PS.border( PAINT.WHITE, PAINT.PALETTE_COLUM, 2 );
+	PS.border( PAINT.PALETTE_COLUM, PAINT.WHITE, 2 );
 	PAINT.current = PAINT.WHITE;
 	PAINT.color = PS.COLOR_WHITE;
 
@@ -224,10 +224,6 @@ PS.enter = function( x, y, data, options ) {
 	else
 	{
 		PAINT.dragging = false; // stop dragging if over palette
-		if ( y === PAINT.ERASE_Y )
-		{
-			PAINT.prompt = false;
-		}
 	}
 };
 
@@ -246,10 +242,6 @@ PS.exit = function( x, y, data, options ) {
 
 	// Show instructions when mouse is first moved
 
-	if ( !PAINT.prompt )
-	{
-		PAINT.prompt = true;
-	}
 
 	if ( x < PAINT.PALETTE_COLUM )
 	{
