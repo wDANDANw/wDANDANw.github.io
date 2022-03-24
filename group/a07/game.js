@@ -48,21 +48,122 @@ Any value returned is ignored.
 [options : Object] = A JavaScript object with optional data properties; see API documentation for details.
 */
 
+var PAINT = {
+
+	// CONSTANTS
+	// Constant names are all upper-case to make them easy to distinguish
+
+	WIDTH: 9, // width of grid
+	HEIGHT: 17, // height of grid (one extra row for palette)
+	PALETTE_ROW: 16, // row occupied by palette
+	WHITE: 7, // x-position of white in palette
+	ERASE_X: 8, // x-position of X in palette
+
+	// The palette colors, scientifically chosen! :)
+
+	COLORS: [
+		0x000000, 0x1F246A, 0x8A1181, 0xD14444,
+		0x2CA53E, 0x68CBCB, 0xE3C72D, 0xFFFFFF,
+	],
+
+	// VARIABLES
+	// Variable names are lower-case with camelCaps
+
+	current: 7, // x-pos of current palette selection
+	color: PS.COLOR_WHITE, // color of current palette selection
+	underColor: PS.COLOR_WHITE, // color of bead under the brush
+	dragging: false, // true if dragging brush
+	prompt: false, // true if instructions displayed
+
+	// FUNCTIONS
+	// Function names are lower case with camelCaps
+
+	// PAINT.select ( x, y, data )
+	// Selects a new color for painting
+
+	select : function ( x, y, data ) {
+		"use strict";
+
+		// activate border if changing selection
+
+		if ( x !== PAINT.current )	{
+			PS.border(PAINT.current, PAINT.HEIGHT - 1, 0); // turn off previous border
+			PS.border( x, y, 2 );
+			PAINT.current = x;
+			PAINT.color = data; // set current color from color stored in bead data
+			PS.audioPlay( "fx_click" );
+		}
+	},
+
+	// PAINT.reset ()
+	// Clears the canvas, except the bottom row
+
+	reset : function () {
+		"use strict";
+		var i;
+
+		PAINT.dragging = false;
+		PAINT.underColor = PS.COLOR_WHITE;
+		for ( i = 0; i < PAINT.PALETTE_ROW; i += 1 )	{
+			PS.color( PS.ALL, i, PS.COLOR_WHITE );
+		}
+		PS.audioPlay( "fx_pop" );
+	}
+};
+
 PS.init = function( system, options ) {
-	// Uncomment the following code line
-	// to verify operation:
+	"use strict";
+	var i, lastx, lasty, color;
 
-	// PS.debug( "PS.init() called\n" );
+	PS.gridSize( PAINT.WIDTH, PAINT.HEIGHT );
+	PS.gridColor( 0x303030 );
+	PS.border( PS.ALL, PS.ALL, 0 ); // disable all borders
 
-	// This function should normally begin
-	// with a call to PS.gridSize( x, y )
-	// where x and y are the desired initial
-	// dimensions of the grid.
-	// Call PS.gridSize() FIRST to avoid problems!
-	// The sample call below sets the grid to the
-	// default dimensions (8 x 8).
-	// Uncomment the following code line and change
-	// the x and y parameters as needed.
+	// Load and lock sounds
+
+	PS.audioLoad( "fx_click", { lock : true } );
+	PS.audioLoad( "fx_pop", { lock : true } );
+
+	// Draw palette
+
+	lastx = PAINT.WIDTH - 1;
+	lasty = PAINT.PALETTE_ROW; // faster if saved in local var
+	for ( i = 0; i < lastx; i += 1 ) {
+		color = PAINT.COLORS[ i ];
+		PS.color( i, lasty, color ); // set visible color
+		PS.data( i, lasty, color ); // also store color as bead data
+		PS.exec( i, lasty, PAINT.select ); // call PAINT.select when clicked
+
+		// Set border color according to palette position
+
+		if ( i < 12 )
+		{
+			color = 0x000000; // black for light colors
+		}
+		else
+		{
+			color = 0xC0C0C0; // light gray for dark colors
+		}
+		PS.borderColor( i, lasty, color );
+	}
+
+	// Set up reset button
+
+	PAINT.ERASE_X = lastx; // remember the x-position
+	PS.glyphColor( lastx, lasty, PS.COLOR_BLACK );
+	PS.glyph( lastx, lasty, "X" );
+	PS.exec( lastx, lasty, PAINT.reset ); // call PAINT.Reset when clicked
+
+	// Start with white selected
+
+	PS.border( PAINT.WHITE, PAINT.PALETTE_ROW, 2 );
+	PAINT.current = PAINT.WHITE;
+	PAINT.color = PS.COLOR_WHITE;
+
+	PAINT.reset();
+
+	PS.statusColor( PS.COLOR_WHITE );
+	PS.statusText( "Simple Paint" );
 
 	PS.gridSize( 3, 3 );
 
@@ -88,13 +189,14 @@ This function doesn't have to do anything. Any value returned is ignored.
 */
 
 PS.touch = function( x, y, data, options ) {
-	// Uncomment the following code line
-	// to inspect x/y parameters:
+	"use strict";
 
-	// PS.debug( "PS.touch() @ " + x + ", " + y + "\n" );
-
-	// Add code here for mouse clicks/touches
-	// over a bead.
+	if ( y < PAINT.PALETTE_ROW )
+	{
+		PAINT.dragging = true;
+		PAINT.underColor = PAINT.color;
+		PS.color( x, y, PAINT.color );
+	}
 };
 
 /*
@@ -108,11 +210,9 @@ This function doesn't have to do anything. Any value returned is ignored.
 */
 
 PS.release = function( x, y, data, options ) {
-	// Uncomment the following code line to inspect x/y parameters:
+	"use strict";
 
-	// PS.debug( "PS.release() @ " + x + ", " + y + "\n" );
-
-	// Add code here for when the mouse button/touch is released over a bead.
+	PAINT.dragging = false;
 };
 
 /*
@@ -144,11 +244,20 @@ This function doesn't have to do anything. Any value returned is ignored.
 */
 
 PS.exit = function( x, y, data, options ) {
-	// Uncomment the following code line to inspect x/y parameters:
+	"use strict";
 
-	// PS.debug( "PS.exit() @ " + x + ", " + y + "\n" );
+	// Show instructions when mouse is first moved
 
-	// Add code here for when the mouse cursor/touch exits a bead.
+	if ( !PAINT.prompt )
+	{
+		PAINT.prompt = true;
+		PS.statusText("Click to select colors, click/drag to paint");
+	}
+
+	if ( y < PAINT.PALETTE_ROW )
+	{
+		PS.color( x, y, PAINT.underColor );
+	}
 };
 
 /*
