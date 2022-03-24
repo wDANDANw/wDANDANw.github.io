@@ -165,7 +165,6 @@ PS.init = function( system, options ) {
 	PS.statusColor( PS.COLOR_WHITE );
 	PS.statusText( "Simple Paint" );
 
-	PS.gridSize( 3, 3 );
 
 	// This is also a good place to display
 	// your game title or a welcome message
@@ -226,11 +225,26 @@ This function doesn't have to do anything. Any value returned is ignored.
 */
 
 PS.enter = function( x, y, data, options ) {
-	// Uncomment the following code line to inspect x/y parameters:
+	"use strict";
 
-	// PS.debug( "PS.enter() @ " + x + ", " + y + "\n" );
-
-	// Add code here for when the mouse cursor/touch enters a bead.
+	if ( y < PAINT.PALETTE_ROW )
+	{
+		PAINT.underColor = PS.color( x, y );
+		PS.color( x, y, PAINT.color );
+		if ( PAINT.dragging )
+		{
+			PAINT.underColor = PAINT.color;
+		}
+	}
+	else
+	{
+		PAINT.dragging = false; // stop dragging if over palette
+		if ( x === PAINT.ERASE_X )
+		{
+			PAINT.prompt = false;
+			PS.statusText( "Click X to erase painting" );
+		}
+	}
 };
 
 /*
