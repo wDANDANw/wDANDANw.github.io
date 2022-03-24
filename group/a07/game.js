@@ -34,7 +34,7 @@ If you don't use JSHint (or are using it with a configuration file), you can saf
 */
 
 /* jshint browser : true, devel : true, esversion : 6, freeze : true */
-/* globals PS : true */
+/* globals PS : true*/
 
 "use strict"; // Do NOT remove this directive!
 
@@ -48,118 +48,67 @@ Any value returned is ignored.
 [options : Object] = A JavaScript object with optional data properties; see API documentation for details.
 */
 
-var PAINT = {
+import BALL from "./src/ball.js";
+import GAME_CONFIG from "./src/config.js";
+import PAINT from "./src/paint.js";
+import {debug as UtilsDebug} from "./src/utils.js";
 
-	// CONSTANTS
-	// Constant names are all upper-case to make them easy to distinguish
+const GAME_DEBUG_MASK = true;
+const debug = (message, message_debug_level) => { if (GAME_DEBUG_MASK) UtilsDebug(message, message_debug_level)};
 
-	WIDTH: 9, // width of grid (one extra column for palette)
-	HEIGHT: 17, // height of grid
-	PALETTE_COLUM: 8, // column occupied by palette
-	WHITE: 0, // y-position of white in palette
-	ERASE_X: 16, // y-position of X in palette
+/**
+ * Core Loop Related Fields and Functions
+ */
+const GAME = {
 
-	// The palette colors, scientifically chosen! :)
+	// Global Variables
+	MAIN_LOOP_ID : null,
 
-	COLORS: [
-		0xFFFFFF, 0xE3C72D, 0x68CBCB, 0x2CA53E,
-		0xD14444, 0x8A1181, 0x1F246A, 0x000000
-	],
+	// Functions
 
-	// VARIABLES
-	// Variable names are lower-case with camelCaps
+	/**
+	 * Function to initialize the grid
+	 */
+	initializeGrid : function () {
 
-	current: 15, // y-pos of current palette selection
-	color: 0xDCF5FF, // color of current palette selection
-	underColor: 0xDCF5FF, // color of bead under the brush
-	dragging: false, // true if dragging brush
+		PS.gridSize( GAME_CONFIG.WIDTH, GAME_CONFIG.HEIGHT );
+		PS.gridColor( GAME_CONFIG.GRID_BACKGROUND_COLOR );
+		PS.border( PS.ALL, PS.ALL, 0 ); // disable all borders
+		PS.statusColor( GAME_CONFIG.STATUS_COLOR );
 
-	// FUNCTIONS
-
-	// PAINT.select ( x, y, data )
-	// Selects a new color for painting
-
-	select : function ( x, y, data ) {
-		"use strict";
-
-		// activate border if changing selection
-
-		if ( y !== PAINT.current & y < 8 )	{
-			PS.border(PAINT.WIDTH - 1, PAINT.current, 0); // turn off previous border
-			PS.border( x, y, 2 );
-			PAINT.current = y;
-			PAINT.color = data; // set current color from color stored in bead data
-			PS.audioPlay( "fx_click" );
-		}
 	},
 
-	// PAINT.reset ()
-	// Clears the canvas, except the rightmost row
+	/**
+	 * Function to load sound assets to game
+	 */
+	loadSounds : function () {
 
-	reset : function () {
-		"use strict";
-		var i;
+		// Load and lock sounds
+		PS.audioLoad( "fx_click", { lock : true } );
+		PS.audioLoad( "fx_pop", { lock : true } );
+	},
 
-		PAINT.dragging = false;
-		PAINT.underColor = 0xDCF5FF;
-		for ( i = 7; i > -1; i -= 1 )	{
-			PS.color( i, PS.ALL, PS.COLOR_WHITE );
-		}
-		PS.audioPlay( "fx_pop" );
+	/**
+	 * The main loop of the game that is being updated each frame
+	 */
+	tick : function () {
+
+		// Update and redraw balls
+		BALL.updateAllBalls();
 	}
 };
 
-
-
-
 PS.init = function( system, options ) {
 	"use strict";
-	var i, lastx, lasty, color;
 
-	PS.gridSize( PAINT.WIDTH, PAINT.HEIGHT );
-	PS.gridColor( 0x303030 );
-	PS.border( PS.ALL, PS.ALL, 0 ); // disable all borders
-	PS.statusColor( 0x303030 );
+	// Initialize assets
+	GAME.initializeGrid();
+	GAME.loadSounds();
 
+	PAINT.init();
 
-	// Load and lock sounds
-
-	PS.audioLoad( "fx_click", { lock : true } );
-	PS.audioLoad( "fx_pop", { lock : true } );
-
-	// Draw palette
-
-	lastx = PAINT.PALETTE_COLUM;
-	lasty = PAINT.HEIGHT - 1; // faster if saved in local var
-	for ( i = 0; i < lasty; i += 1 ) {
-		color = PAINT.COLORS[ i ];
-		PS.color( lastx, i, color ); // set visible color
-		PS.data( lastx, i, color ); // also store color as bead data
-		PS.exec( lastx, i, PAINT.select ); // call PAINT.select when clicked
-
-		// Set border color according to palette position
-
-		PS.borderColor( lastx, i, 0xC0C0C0 );
-	}
-
-	// Set up reset button
-
-	PAINT.ERASE_Y = lasty; // remember the x-position
-	PS.glyphColor( lastx, lasty, PS.COLOR_BLACK );
-	PS.glyph( lastx, lasty, "X" );
-	PS.exec( lastx, lasty, PAINT.reset ); // call PAINT.Reset when clicked
-
-	// Start with white selected
-
-	PS.border( PAINT.PALETTE_COLUM, PAINT.WHITE, 2 );
-	PAINT.current = PAINT.WHITE;
-	PAINT.color = PS.COLOR_WHITE;
-
-	PAINT.reset();
-
-
-
-	// Add any other initialization code you need here.
+	// Start the game loop
+	GAME.MAIN_LOOP_ID = PS.timerStart( GAME_CONFIG.FRAME_RATE, GAME.tick );
 };
 
 /*
@@ -181,6 +130,8 @@ PS.touch = function( x, y, data, options ) {
 		PAINT.underColor = PAINT.color;
 		PS.color( x, y, PAINT.color );
 	}
+
+	BALL.addBall(x, y);
 };
 
 /*
@@ -320,3 +271,4 @@ PS.input = function( sensors, options ) {
 
 	// Add code here for when an input event is detected.
 };
+
