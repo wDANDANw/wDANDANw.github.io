@@ -55,7 +55,7 @@ var PAINT = {
 
 	WIDTH: 9, // width of grid
 	HEIGHT: 17, // height of grid (one extra row for palette)
-	PALETTE_COLUM: 9, // row occupied by palette
+	PALETTE_COLUM: 8, // column occupied by palette
 	WHITE: 7, // x-position of white in palette
 	ERASE_X: 8, // x-position of X in palette
 
