@@ -57,7 +57,7 @@ var PAINT = {
 	HEIGHT: 17, // height of grid
 	PALETTE_COLUM: 8, // column occupied by palette
 	WHITE: 15, // y-position of white in palette
-	ERASE_X: 9, // y-position of X in palette
+	ERASE_X: 16, // y-position of X in palette
 
 	// The palette colors, scientifically chosen! :)
 
