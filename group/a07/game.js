@@ -53,8 +53,8 @@ var PAINT = {
 	// CONSTANTS
 	// Constant names are all upper-case to make them easy to distinguish
 
-	WIDTH: 9, // width of grid
-	HEIGHT: 17, // height of grid (one extra row for palette)
+	WIDTH: 9, // width of grid (one extra column for palette)
+	HEIGHT: 17, // height of grid
 	PALETTE_COLUM: 8, // column occupied by palette
 	WHITE: 7, // x-position of white in palette
 	ERASE_X: 8, // x-position of X in palette
@@ -139,15 +139,7 @@ PS.init = function( system, options ) {
 
 		// Set border color according to palette position
 
-		if ( i < 12 )
-		{
-			color = 0x000000; // black for light colors
-		}
-		else
-		{
-			color = 0xC0C0C0; // light gray for dark colors
-		}
-		PS.borderColor( i, lasty, color );
+		PS.borderColor( lastx, i, 0xC0C0C0 );
 	}
 
 	// Set up reset button
@@ -166,7 +158,6 @@ PS.init = function( system, options ) {
 	PAINT.reset();
 
 	PS.statusColor( PS.COLOR_WHITE );
-	PS.statusText( "Simple Paint" );
 
 
 	// This is also a good place to display
