@@ -57,7 +57,7 @@ var PAINT = {
 	HEIGHT: 17, // height of grid
 	PALETTE_COLUM: 8, // column occupied by palette
 	WHITE: 15, // y-position of white in palette
-	ERASE_X: 16, // y-position of X in palette
+	ERASE_X: 9, // y-position of X in palette
 
 	// The palette colors, scientifically chosen! :)
 
@@ -69,7 +69,7 @@ var PAINT = {
 	// VARIABLES
 	// Variable names are lower-case with camelCaps
 
-	current: 7, // x-pos of current palette selection
+	current: 15, // y-pos of current palette selection
 	color: 0xDCF5FF, // color of current palette selection
 	underColor: 0xDCF5FF, // color of bead under the brush
 	dragging: false, // true if dragging brush
@@ -87,9 +87,9 @@ var PAINT = {
 		// activate border if changing selection
 
 		if ( y !== PAINT.current )	{
-			PS.border(PAINT.current, PAINT.HEIGHT - 1, 0); // turn off previous border
+			PS.border(PAINT.WIDTH - 1, PAINT.current, 0); // turn off previous border
 			PS.border( x, y, 2 );
-			PAINT.current = x;
+			PAINT.current = y;
 			PAINT.color = data; // set current color from color stored in bead data
 			PS.audioPlay( "fx_click" );
 		}
@@ -104,8 +104,8 @@ var PAINT = {
 
 		PAINT.dragging = false;
 		PAINT.underColor = 0xDCF5FF;
-		for ( i = 0; i < PAINT.PALETTE_COLUM; i += 1 )	{
-			PS.color( PS.ALL, i, PS.COLOR_WHITE );
+		for ( i = 7; i > -1; i -= 1 )	{
+			PS.color( i, PS.ALL, PS.COLOR_WHITE );
 		}
 		PS.audioPlay( "fx_pop" );
 	}
@@ -151,7 +151,7 @@ PS.init = function( system, options ) {
 
 	// Start with white selected
 
-	PS.border( PAINT.WHITE, PAINT.PALETTE_COLUM, 2 );
+	//PS.border( PAINT.WHITE, PAINT.PALETTE_COLUM, 2 );
 	PAINT.current = PAINT.WHITE;
 	PAINT.color = PS.COLOR_WHITE;
 
