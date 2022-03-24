@@ -55,7 +55,7 @@ var PAINT = {
 
 	WIDTH: 9, // width of grid
 	HEIGHT: 17, // height of grid (one extra row for palette)
-	PALETTE_ROW: 16, // row occupied by palette
+	PALETTE_COLUM: 9, // row occupied by palette
 	WHITE: 7, // x-position of white in palette
 	ERASE_X: 8, // x-position of X in palette
 
@@ -63,15 +63,15 @@ var PAINT = {
 
 	COLORS: [
 		0x000000, 0x1F246A, 0x8A1181, 0xD14444,
-		0x2CA53E, 0x68CBCB, 0xE3C72D, 0xFFFFFF,
+		0x2CA53E, 0x68CBCB, 0xE3C72D, 0xDCF5FF,
 	],
 
 	// VARIABLES
 	// Variable names are lower-case with camelCaps
 
 	current: 7, // x-pos of current palette selection
-	color: PS.COLOR_WHITE, // color of current palette selection
-	underColor: PS.COLOR_WHITE, // color of bead under the brush
+	color: 0xDCF5FF, // color of current palette selection
+	underColor: 0xDCF5FF, // color of bead under the brush
 	dragging: false, // true if dragging brush
 	prompt: false, // true if instructions displayed
 
@@ -88,7 +88,7 @@ var PAINT = {
 
 		if ( x !== PAINT.current )	{
 			PS.border(PAINT.current, PAINT.HEIGHT - 1, 0); // turn off previous border
-			PS.border( x, y, 2 );
+			PS.border( x, y, 3 );
 			PAINT.current = x;
 			PAINT.color = data; // set current color from color stored in bead data
 			PS.audioPlay( "fx_click" );
@@ -103,8 +103,8 @@ var PAINT = {
 		var i;
 
 		PAINT.dragging = false;
-		PAINT.underColor = PS.COLOR_WHITE;
-		for ( i = 0; i < PAINT.PALETTE_ROW; i += 1 )	{
+		PAINT.underColor = 0xDCF5FF;
+		for ( i = 0; i < PAINT.PALETTE_COLUMN; i += 1 )	{
 			PS.color( PS.ALL, i, PS.COLOR_WHITE );
 		}
 		PS.audioPlay( "fx_pop" );
@@ -126,8 +126,8 @@ PS.init = function( system, options ) {
 
 	// Draw palette
 
-	lastx = PAINT.WIDTH - 1;
-	lasty = PAINT.PALETTE_ROW; // faster if saved in local var
+	lastx = PAINT.PALETTE_COLUMN;
+	lasty = PAINT.HEIGHT - 1; // faster if saved in local var
 	for ( i = 0; i < lastx; i += 1 ) {
 		color = PAINT.COLORS[ i ];
 		PS.color( i, lasty, color ); // set visible color
@@ -156,7 +156,7 @@ PS.init = function( system, options ) {
 
 	// Start with white selected
 
-	PS.border( PAINT.WHITE, PAINT.PALETTE_ROW, 2 );
+	PS.border( PAINT.WHITE, PAINT.PALETTE_COLUMN, 2 );
 	PAINT.current = PAINT.WHITE;
 	PAINT.color = PS.COLOR_WHITE;
 
@@ -190,7 +190,7 @@ This function doesn't have to do anything. Any value returned is ignored.
 PS.touch = function( x, y, data, options ) {
 	"use strict";
 
-	if ( y < PAINT.PALETTE_ROW )
+	if ( x < PAINT.PALETTE_COLUMN )
 	{
 		PAINT.dragging = true;
 		PAINT.underColor = PAINT.color;
@@ -227,7 +227,7 @@ This function doesn't have to do anything. Any value returned is ignored.
 PS.enter = function( x, y, data, options ) {
 	"use strict";
 
-	if ( y < PAINT.PALETTE_ROW )
+	if ( x < PAINT.PALETTE_COLUMN )
 	{
 		PAINT.underColor = PS.color( x, y );
 		PS.color( x, y, PAINT.color );
@@ -268,7 +268,7 @@ PS.exit = function( x, y, data, options ) {
 		PS.statusText("Click to select colors, click/drag to paint");
 	}
 
-	if ( y < PAINT.PALETTE_ROW )
+	if ( x < PAINT.PALETTE_COLUMN )
 	{
 		PS.color( x, y, PAINT.underColor );
 	}
