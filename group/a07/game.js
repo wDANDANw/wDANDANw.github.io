@@ -86,7 +86,7 @@ var PAINT = {
 
 		// activate border if changing selection
 
-		if ( y !== PAINT.current )	{
+		if ( y !== PAINT.current & y < 8 )	{
 			PS.border(PAINT.WIDTH - 1, PAINT.current, 0); // turn off previous border
 			PS.border( x, y, 2 );
 			PAINT.current = y;
@@ -157,16 +157,7 @@ PS.init = function( system, options ) {
 
 	PAINT.reset();
 
-	PS.statusColor( PS.COLOR_WHITE );
 
-
-	// This is also a good place to display
-	// your game title or a welcome message
-	// in the status line above the grid.
-	// Uncomment the following code line and
-	// change the string parameter as needed.
-
-	// PS.statusText( "Game" );
 
 	// Add any other initialization code you need here.
 };
@@ -236,7 +227,6 @@ PS.enter = function( x, y, data, options ) {
 		if ( y === PAINT.ERASE_Y )
 		{
 			PAINT.prompt = false;
-			PS.statusText( "Click X to erase painting" );
 		}
 	}
 };
@@ -259,7 +249,6 @@ PS.exit = function( x, y, data, options ) {
 	if ( !PAINT.prompt )
 	{
 		PAINT.prompt = true;
-		PS.statusText("Click to select colors, click/drag to paint");
 	}
 
 	if ( x < PAINT.PALETTE_COLUM )
