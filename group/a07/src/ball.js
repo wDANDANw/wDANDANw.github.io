@@ -171,27 +171,27 @@ const BALL = {
                 PAINT.addToMusicBarList(PAINT.COLORS[0]);
                 break;
             case PAINT.COLORS[1]:
-                PS.audioPlay( PS.piano(41) );
+                PS.audioPlay( PS.piano(42) );
                 PAINT.addToMusicBarList(PAINT.COLORS[1]);
                 break;
             case PAINT.COLORS[2]:
-                PS.audioPlay( PS.piano(42) );
+                PS.audioPlay( PS.piano(44) );
                 PAINT.addToMusicBarList(PAINT.COLORS[2]);
                 break;
             case PAINT.COLORS[3]:
-                PS.audioPlay( PS.piano(43) );
+                PS.audioPlay( PS.piano(45) );
                 PAINT.addToMusicBarList(PAINT.COLORS[3]);
                 break;
             case PAINT.COLORS[4]:
-                PS.audioPlay( PS.piano(44) );
+                PS.audioPlay( PS.piano(47) );
                 PAINT.addToMusicBarList(PAINT.COLORS[4]);
                 break;
             case PAINT.COLORS[5]:
-                PS.audioPlay( PS.piano(45) );
+                PS.audioPlay( PS.piano(49) );
                 PAINT.addToMusicBarList(PAINT.COLORS[5]);
                 break;
             case PAINT.COLORS[6]:
-                PS.audioPlay( PS.piano(46) );
+                PS.audioPlay( PS.piano(51) );
                 PAINT.addToMusicBarList(PAINT.COLORS[6]);
                 break;
             default:
