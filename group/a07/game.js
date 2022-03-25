@@ -75,6 +75,7 @@ const GAME = {
 		PS.gridColor( GAME_CONFIG.GRID_BACKGROUND_COLOR );
 		PS.border( PS.ALL, PS.ALL, 0 ); // disable all borders
 		PS.statusColor( GAME_CONFIG.STATUS_COLOR );
+		PS.statusText("OvO");
 
 	},
 
@@ -95,6 +96,14 @@ const GAME = {
 
 		// Update and redraw balls
 		BALL.updateAllBalls();
+
+		// The only function that needs update
+		PAINT.drawMusicBar();
+	},
+
+	changeGameSpeed : function (speed_multiplier) {
+		PS.timerStop(GAME.MAIN_LOOP_ID);
+		GAME.MAIN_LOOP_ID = PS.timerStart( GAME_CONFIG.FRAME_RATE / speed_multiplier, GAME.tick );
 	}
 };
 
@@ -124,14 +133,29 @@ This function doesn't have to do anything. Any value returned is ignored.
 PS.touch = function( x, y, data, options ) {
 	"use strict";
 
-	if ( x < PAINT.PALETTE_COLUM )
-	{
-		PAINT.dragging = true;
-		PAINT.underColor = PAINT.color;
-		PS.color( x, y, PAINT.color );
+	if (PAINT.current > 8) { // Pinball Mode
+		PAINT.drawPinball(x);
+	} else if (PAINT.current == 8) { // Ball Mode
+		console.log("Ball Mode")
+		if (BALL.isInPlaygroundArea(x,y) && PAINT.ball_numbers > 0) {
+			BALL.addBall(x, y);
+		}
+	} else if (PAINT.current == 7) { // Eraser Mode
+		if (BALL.isInPlaygroundArea(x,y)){
+			PAINT.dragging = true;
+			PAINT.clearBead([x,y])
+			PAINT.underColor = PS.COLOR_WHITE;
+			PS.color( x, y, PS.COLOR_WHITE );
+		}
+	} else {
+		if (BALL.isInPlaygroundArea(x,y)){
+			PAINT.dragging = true;
+			PAINT.underColor = PAINT.color;
+			PS.color( x, y, PAINT.color );
+			PS.data( x, y, PAINT.color);
+			console.log(x,y,PS.data(x,y))
+		}
 	}
-
-	BALL.addBall(x, y);
 };
 
 /*
@@ -163,19 +187,29 @@ This function doesn't have to do anything. Any value returned is ignored.
 PS.enter = function( x, y, data, options ) {
 	"use strict";
 
-	if ( x < PAINT.PALETTE_COLUM )
-	{
-		PAINT.underColor = PS.color( x, y );
-		PS.color( x, y, PAINT.color );
-		if ( PAINT.dragging )
+	if (PAINT.current == 9) {
+
+		PAINT.drawPinball(x);
+
+
+	} else {
+		if (BALL.isInPlaygroundArea(x,y))
 		{
-			PAINT.underColor = PAINT.color;
+			PAINT.underColor = PS.color( x, y );
+			PS.color( x, y, PAINT.color );
+
+			if ( PAINT.dragging )
+			{
+				PS.data ( x, y, PAINT.color);
+				PAINT.underColor = PAINT.color;
+			}
+		}
+		else
+		{
+			PAINT.dragging = false; // stop dragging if over palette
 		}
 	}
-	else
-	{
-		PAINT.dragging = false; // stop dragging if over palette
-	}
+
 };
 
 /*
@@ -194,7 +228,7 @@ PS.exit = function( x, y, data, options ) {
 	// Show instructions when mouse is first moved
 
 
-	if ( x < PAINT.PALETTE_COLUM )
+	if ( BALL.isInPlaygroundArea(x,y))
 	{
 		PS.color( x, y, PAINT.underColor );
 	}
@@ -272,3 +306,4 @@ PS.input = function( sensors, options ) {
 	// Add code here for when an input event is detected.
 };
 
+export default GAME;
