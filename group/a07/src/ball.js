@@ -195,7 +195,7 @@ const BALL = {
                 PAINT.addToMusicBarList(PAINT.COLORS[6]);
                 break;
             default:
-                debug("Default in collision", 2);
+                debug("Default in collision");
                 break;
         }
 
@@ -229,14 +229,22 @@ const BALL = {
     },
 
     /**
-     *
+     * Function to instantly destroy all balls in the list
+     * Since needs instant destroy, cannot use the destroy balls in list function
      */
-    destroyAll : function () {
+    destroyAll : function (from_reset_ball_count_panel = false) {
         debug("BALL:destoryAll: Destroying all!", 1)
 
+        // Destroy all balls by empty and initialize those two lists
         BALL.ball_list = [];
         BALL.destroy_list = [];
-        BALL.destroying_all = true;
+
+        // Then turn the flag to false
+        BALL.destroying_all = false;
+
+        // After this, tell PAINT::BallCountPanel that balls reset. Therefore, update the ball count panel accordingly.
+        if (!from_reset_ball_count_panel) PAINT.resetBallCountPanel();
+
     },
 
     /**
@@ -246,25 +254,15 @@ const BALL = {
      */
     destroyBallsInDestroyList : function () {
 
-        // Destroying all. Will remove and empty everything
-        if (BALL.destroying_all) {
+        // First sort the destroy list in ascending order.
+        // This will ensure that previous deleted index will not impact next index
+        BALL.destroy_list.sort( (a, b) => {return a - b}) // Sort takes a comparison function
 
-            PAINT.reset();
-            BALL.destroying_all = false;
-
-        } else { // Process the destory list
-
-            // First sort the destroy list in ascending order.
-            // This will ensure that previous deleted index will not impact next index
-            BALL.destroy_list.sort( (a, b) => {return a - b}) // Sort takes a comparison function
-
-            // Then destroy all balls in the list
-            while (BALL.destroy_list.length > 0) {
-                const index_to_be_deleted = BALL.destroy_list.pop();
-                BALL.ball_list.splice(index_to_be_deleted, 1);
-                PAINT.updateBallPanel(+1);
-        }
-
+        // Then destroy all balls in the list
+        while (BALL.destroy_list.length > 0) {
+            const index_to_be_deleted = BALL.destroy_list.pop();
+            BALL.ball_list.splice(index_to_be_deleted, 1);
+            PAINT.updateBallCountPanel(+1);
 
         }
     },
@@ -282,7 +280,7 @@ const BALL = {
         BALL.ball_list.push(new_ball);
 
         PAINT.drawBall([x,y]);
-        PAINT.updateBallPanel(-1);
+        PAINT.updateBallCountPanel(-1);
 
         debug("Added a new ball!", 1);
     },

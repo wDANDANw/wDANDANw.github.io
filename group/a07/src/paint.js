@@ -41,7 +41,8 @@ const PAINT = {
     dragging: false, // true if dragging brush
 
     ball_panel_ball_coord_list: [], // The coordinate list for positions of balls
-    ball_numbers : 18, // At most 18 balls
+    ball_numbers : 18, // At most 18 balls.
+    ball_panel_ball_coord_list_index: 0, // The current index of the ball panel list. Used for updating the ball paints
 
     pinball_sprite : null, // The reference to the pinball sprite
     pinball_x : 25, // The x-coordinate of the pinball
@@ -65,12 +66,9 @@ const PAINT = {
 
         PAINT.drawBallPanel();
 
-
         // Start with first color selected
         PAINT.current = 0;
         PAINT.color = PAINT.COLORS[0];
-
-        PAINT.reset();
     },
 
     /**
@@ -111,6 +109,7 @@ const PAINT = {
 
     /**
      * Helper function to draw the color panel at left and the playground at the middle
+     * Initializer for color panel
      * 10 x 32 for color panel
      * 12 x 32 for playground (too simple so combined with color panel in init)
      */
@@ -276,9 +275,9 @@ const PAINT = {
         }
     },
 
-
     /**
-     * Helper function to draw the ball panel
+     * Helper function to draw and initialize the ball panel
+     * Initializer for ball panel (the whole right panel)
      */
     drawBallPanel : function () {
 
@@ -294,7 +293,7 @@ const PAINT = {
         _drawBoarders();
 
         // Draw the balls
-        PAINT.callBackBalls();
+        _drawBallCountPanel();
 
         // Draw Ball Indicator
         _drawBallIndicator();
@@ -350,6 +349,66 @@ const PAINT = {
 
         }
 
+
+        /**
+         * Function to draw and initialize the ball count panel
+         * Will initialize PAINT::ball_panel related variables
+         */
+        function _drawBallCountPanel () {
+
+            // Order: from top to bottom, from left to right
+            // Need to be row first and column next to make the coordinates in a specific order when refilling
+
+            // Initialize the variables
+            PAINT.ball_numbers = 0;
+            PAINT.ball_panel_ball_coord_list = [];
+
+            // Local to drawBallCountPanel but global to _initializeOneBallPanelGrid variable
+            // Save performance while initializing
+            let coord = [24, 2];
+
+            // First three rows Area: 6x3
+            for ( let col = 24 ; col < 27 ; col ++) {
+                for ( let row = 2 ; row < 8 ; row ++) {
+                    _initializeOneBallPanelGrid( col, row )
+                }
+            }
+
+            // Second three rows Area 3x3
+            for ( let col = 27 ; col < 30 ; col ++) {
+                for ( let row = 2 ; row < 5 ; row ++) {
+                    _initializeOneBallPanelGrid( col, row )
+                }
+            }
+
+            // Pointing to the very last index
+            PAINT.ball_panel_ball_coord_list_index = PAINT.ball_numbers - 1;
+            PAINT.updateBallCountNumberPanel();
+
+            /**
+             * Inner helper function to initialize one ball panel grid
+             * @param x: x-coord
+             * @param y: y-coord
+             * @private
+             */
+            function _initializeOneBallPanelGrid (x, y) {
+                // The current coordinate
+                coord = [x, y];
+
+                // First reset the bead totally. The draw the ball onside
+                PAINT.clearBead(coord);
+                PAINT.drawBall(coord);
+
+                // Push a new coordinate to the list
+                PAINT.ball_panel_ball_coord_list.push(coord);
+                PAINT.ball_numbers += 1;
+
+                // Add the data and exec function of the beads
+                PS.data(x, y, BALL.BALL_COLOR);
+                PS.exec(x, y, PAINT.select);
+            }
+        };
+
         /**
          * Helper function to draw the ball indicator
          * @private
@@ -358,10 +417,10 @@ const PAINT = {
             PS.glyph(28, 6, (PAINT.ball_numbers / 10).toString());
             PS.glyph(29, 6, (PAINT.ball_numbers % 10).toString());
 
-            PS.exec(28, 6, PAINT.callBackBalls);
-            PS.exec(28, 6, PAINT.callBackBalls);
-            PS.exec(29, 7, PAINT.callBackBalls);
-            PS.exec(29, 7, PAINT.callBackBalls);
+            PS.exec(28, 6, PAINT.resetBallCountPanel);
+            PS.exec(28, 6, PAINT.resetBallCountPanel);
+            PS.exec(29, 7, PAINT.resetBallCountPanel);
+            PS.exec(29, 7, PAINT.resetBallCountPanel);
         }
 
 
@@ -429,27 +488,6 @@ const PAINT = {
                 }
             }
         }
-
-    },
-
-    updateBallPanel : function (change) {
-
-        if (change == -1) {
-
-            PAINT.ball_numbers -=1;
-            PAINT.clearBead(PAINT.ball_panel_ball_coord_list[PAINT.ball_numbers - 1], false);
-
-        } else if (change == 1) {
-
-            PAINT.ball_numbers +=1;
-            PAINT.drawBall(PAINT.ball_panel_ball_coord_list[PAINT.ball_numbers - 1]);
-
-        } else  {
-            debug("PAINT::updateBallPanel: Error: not +1 or -1")
-        }
-
-        PS.glyph(28, 6, (PAINT.ball_numbers / 10).toString());
-        PS.glyph(29, 6, (PAINT.ball_numbers % 10).toString());
 
     },
 
@@ -536,21 +574,41 @@ const PAINT = {
      * Method to draw a ball
      * @param coord
      */
-    drawBall : function (coord) {
+    drawBall : function (coord, specialArea=0) {
 
         const x = coord[0];
         const y = coord[1];
 
-        PS.bgColor ( x, y, PS.data(x, y) ) // use original color
+        // Change background color based on area
+        let bg_color;
+        switch (specialArea) {
+            case 0: // playground area
+                bg_color = PS.data( x, y );
+                break;
+            case 1: // Ball count panel
+                bg_color = GAME_CONFIG.BEAD_BACKGROUND_COLOR;
+                break;
+            default: // Default to background color
+                bg_color = GAME_CONFIG.BEAD_BACKGROUND_COLOR;
+                break;
+        }
+
+        PS.bgColor ( x, y, bg_color ) // If not at special areas, use original color
+
         PS.bgAlpha( x, y, PS.ALPHA_OPAQUE )
+
         PS.scale( x, y, 85 ) // Slightly smaller
+
         PS.radius( x, y, 50 ) // Circular
+
         PS.color( x, y, BALL.BALL_COLOR );
+
     },
 
     /**
      * Method to empty a bead
-     * @param coord
+     * @param coord: the coordinate of the bead
+     * @param dataAndFunctionReset: can control if want to reset the data and function of the bead as well. Default is yes.
      */
     clearBead : function (coord, dataAndFunctionReset=true) {
 
@@ -570,45 +628,65 @@ const PAINT = {
     },
 
     /**
-     * Function to call back all balls
+     * Function called when ball number is changed
+     * @param change: +1 = add a new ball (recovered after dropped)
+     * @param change: -1 = used a ball
      */
-    callBackBalls : function (reset=false) {
+    updateBallCountPanel : function (change) {
 
-        PAINT.ball_numbers = 18;
+        if (change === -1) {
 
-        let coord;
-        // Add coords
-        for ( let col = 24 ; col < 30 ; col ++) {
-            for ( let row = 2 ; row < 5 ; row ++) {
+            PAINT.ball_panel_ball_coord_list_index -=1;
+            PAINT.clearBead(PAINT.ball_panel_ball_coord_list[PAINT.ball_panel_ball_coord_list_index], false);
 
-                coord = [col, row]
+        } else if (change === 1) {
 
-                PAINT.clearBead(coord);
-                PAINT.ball_panel_ball_coord_list.push(coord);
-                PAINT.drawBall(coord);
-                PS.data(col, row, BALL.BALL_COLOR);
-                PS.exec(col, row, PAINT.select);
-            }
+            PAINT.ball_panel_ball_coord_list_index +=1;
+            PAINT.drawBall(PAINT.ball_panel_ball_coord_list[PAINT.ball_panel_ball_coord_list_index], 1);
+
+        } else  {
+            debug("PAINT::updateBallCountPanel: Error: not +1 or -1")
         }
 
-        for ( let col = 24 ; col < 27 ; col ++) {
-            for ( let row = 5 ; row < 8 ; row ++) {
+        PAINT.updateBallCountNumberPanel();
 
-                coord = [col, row]
+    },
 
-                PAINT.clearBead(coord);
-                PAINT.ball_panel_ball_coord_list.push(coord);
-                PAINT.drawBall(coord);
-                PS.data(col, row, BALL.BALL_COLOR);
-                PS.exec(col, row, PAINT.select);
+    /**
+     * Function to update the ball count number panel after ball number changed
+     */
+    updateBallCountNumberPanel : function () {
+        PS.glyph(28, 6, (PAINT.ball_numbers / 10).toString());
+        PS.glyph(29, 6, (PAINT.ball_numbers % 10).toString());
+    },
 
-            }
+    /**
+     * Function to reset all balls in the ball count panel.
+     * Different than the initial draw
+     * It will also update the ball lists
+     */
+    resetBallCountPanel : function () {
+
+        // First reset the PAINT.ball_numbers as the index of the ball panel list
+        PAINT.ball_panel_ball_coord_list_index = 0;
+
+        let local_index;
+        const coord_list = PAINT.ball_panel_ball_coord_list;
+
+        // Then, for all coordinates in the PAINT.ball_panel_ball_coord_list, draw the ball again
+        for ( local_index = 0 ; local_index < PAINT.ball_numbers ; local_index ++ ) {
+            PAINT.clearBead(coord_list[local_index], false);
+            PAINT.drawBall(coord_list[local_index], 1);
         }
 
-        PS.glyph(6, 28, (PAINT.ball_numbers / 10));
-        PS.glyph(7, 28, (PAINT.ball_numbers % 10));
+        // Update coord list index
+        PAINT.ball_panel_ball_coord_list_index = local_index;
 
-        if (!reset) BALL.destroyAll();
+        // Update glyphs
+        PAINT.updateBallCountNumberPanel();
+
+        // Prevents circular calling
+         BALL.destroyAll(true);
     },
 
     select : function ( x, y, data ) {
@@ -623,7 +701,6 @@ const PAINT = {
         if ( PAINT.isInColorPanel(x, y) ) {
 
             const color_index = Math.floor((y-6 ) / 3);
-            console.log(color_index);
 
             if ( color_index !== PAINT.current  )	{
                 // TODO: Needs Modification
@@ -665,9 +742,16 @@ const PAINT = {
             PS.audioPlay( "fx_click" );
             GAME.changeGameSpeed(2.5);
         }  else {
-            console.log("Paint.select: not selected")
+            debug("Paint.select: not selected")
         }
     },
+
+    /**
+     * Helper functions to determine whether x,y is in a certain area when select
+     * @param x: x-coord
+     * @param y: y-coord
+     * @returns {boolean}
+     */
 
     isInColorPanel : function (x, y) {
         return (x >= 2 && x < 8) && (y >= 6 && y < 26);
@@ -701,13 +785,13 @@ const PAINT = {
         return (x >= 28 && x < 30) && (y >= 22 && y < 24);
     },
 
-    // PAINT.reset ()
-    // Clears the canvas, except the rightmost row
 
-    reset : function () {
-        "use strict";
+    /* End of select helper functions */
 
-        debug("Called Paint::Reset!", 1);
+    /**
+     * Method to clean the canvas from paint side.
+     */
+    resetCanvas : function () {
 
         for ( let col = 10 ; col < 22 ; col ++) {
             for ( let row = 2 ; row < 30 ; row ++) {
@@ -715,10 +799,17 @@ const PAINT = {
             }
         }
 
-        BALL.ball_list = [];
-        BALL.destroy_list = [];
+    },
 
-        PAINT.callBackBalls(true);
+    reset : function () {
+        "use strict";
+
+        debug("Called Paint::Reset!", 1);
+
+        PAINT.resetBallCountPanel();
+
+        PAINT.resetCanvas();
+
 
     },
 };

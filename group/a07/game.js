@@ -134,28 +134,33 @@ PS.touch = function( x, y, data, options ) {
 	"use strict";
 
 	if (PAINT.current > 8) { // Pinball Mode
+		debug("Pinball Mode");
 		PAINT.drawPinball(x);
 	} else if (PAINT.current == 8) { // Ball Mode
-		console.log("Ball Mode")
+		debug("Ball Mode");
 		if (BALL.isInPlaygroundArea(x,y) && PAINT.ball_numbers > 0) {
 			BALL.addBall(x, y);
 		}
 	} else if (PAINT.current == 7) { // Eraser Mode
+		debug("Eraser Mode");
 		if (BALL.isInPlaygroundArea(x,y)){
 			PAINT.dragging = true;
 			PAINT.clearBead([x,y])
 			PAINT.underColor = PS.COLOR_WHITE;
 			PS.color( x, y, PS.COLOR_WHITE );
 		}
-	} else {
+	} else if (0 <= PAINT.current && PAINT.current < 7 ) { // Color Mode
+		debug("Color Mode");
 		if (BALL.isInPlaygroundArea(x,y)){
 			PAINT.dragging = true;
 			PAINT.underColor = PAINT.color;
 			PS.color( x, y, PAINT.color );
 			PS.data( x, y, PAINT.color);
-			console.log(x,y,PS.data(x,y))
 		}
+	} else {
+		debug("No Mode Selected. Error");
 	}
+
 };
 
 /*
