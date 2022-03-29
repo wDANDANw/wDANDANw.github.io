@@ -432,9 +432,9 @@ const PAINT = {
 
             // Draw 1X
             PS.glyph(24, 18, 0x1405 ); // ᐅ
-            PS.glyph(25, 18, 0xFFFFFF ); // white
-            PS.glyph(24, 19, 0xFFFFFF ); // white
-            PS.glyph(25, 19, 0xFFFFFF ); // white
+            PS.glyph(25, 18, PS.COLOR_WHITE ); // white
+            PS.glyph(24, 19, PS.COLOR_WHITE ); // white
+            PS.glyph(25, 19, PS.COLOR_WHITE ); // white
 
             PS.exec(24, 18, PAINT.select);
             PS.exec(25, 18, PAINT.select);
@@ -443,10 +443,10 @@ const PAINT = {
 
 
             // Draw 2X
-            PS.glyph(28, 18, 0x1F6F5 ); // Scooter 🛵
-            PS.glyph(29, 18, 0x1F6F5 ); // Scooter 🛵
-            PS.glyph(28, 19, 0x2ABC ); // ⪼
-            PS.glyph(29, 19, "2" ); // 2
+            PS.glyph(28, 18, 0x1405 ); // ᐅ
+            PS.glyph(29, 18, 0x1405 ); // ᐅ
+            PS.glyph(28, 19, PS.COLOR_WHITE ); // white
+            PS.glyph(29, 19, PS.COLOR_WHITE ); // white
 
             PS.exec(28, 18, PAINT.select);
             PS.exec(28, 19, PAINT.select);
@@ -454,10 +454,10 @@ const PAINT = {
             PS.exec(29, 19, PAINT.select);
 
             // Draw 3X
-            PS.glyph(24, 22, 0x1F682 ); // train 🚂
-            PS.glyph(25, 22, 0x1F682 ); // train 🚂
-            PS.glyph(24, 23, 0x2AF8 ); // ⪼
-            PS.glyph(25, 23, "3" ); // 3
+            PS.glyph(24, 22, 0x1405 ); // ᐅ
+            PS.glyph(25, 22, 0x1405 ); // ᐅ
+            PS.glyph(24, 23, 0x1405 ); // ᐅ
+            PS.glyph(25, 23, PS.COLOR_WHITE ); // white
 
             PS.exec(24, 22, PAINT.select);
             PS.exec(25, 22, PAINT.select);
@@ -465,10 +465,10 @@ const PAINT = {
             PS.exec(25, 23, PAINT.select);
 
             // Draw 4X
-            PS.glyph(28, 22, 0X1F6EB ); // train 🛫
-            PS.glyph(29, 22, 0X1F6EB ); // train 🛫
-            PS.glyph(28, 23, 0x2AF8 ); // ⫸
-            PS.glyph(29, 23, "4" ); // 3
+            PS.glyph(28, 22, 0x1405 ); // ᐅ
+            PS.glyph(29, 22, 0x1405 ); // ᐅ
+            PS.glyph(28, 23, 0x1405 ); // ᐅ
+            PS.glyph(29, 23, 0x1405 ); // ᐅ
 
             PS.exec(28, 22, PAINT.select);
             PS.exec(29, 22, PAINT.select);
