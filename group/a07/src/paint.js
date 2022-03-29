@@ -432,9 +432,9 @@ const PAINT = {
 
             // Draw 1X
             PS.glyph(24, 18, 0x1405 ); // ᐅ
-            PS.glyph(25, 18, 0xFFFF ); // white
-            PS.glyph(24, 19, 0xFFFF ); // white
-            PS.glyph(25, 19, 0xFFFF ); // white
+            PS.glyph(25, 18, 0x2010 ); // -
+            PS.glyph(24, 19, 0x2010 ); // -
+            PS.glyph(25, 19, 0x2010 ); // -
 
             PS.exec(24, 18, PAINT.select);
             PS.exec(25, 18, PAINT.select);
@@ -445,8 +445,8 @@ const PAINT = {
             // Draw 2X
             PS.glyph(28, 18, 0x1405 ); // ᐅ
             PS.glyph(29, 18, 0x1405 ); // ᐅ
-            PS.glyph(28, 19, 0xFFFF ); // white
-            PS.glyph(29, 19, 0xFFFF ); // white
+            PS.glyph(28, 19, 0x2010 ); // -
+            PS.glyph(29, 19, 0x2010 ); // -
 
             PS.exec(28, 18, PAINT.select);
             PS.exec(28, 19, PAINT.select);
@@ -457,7 +457,7 @@ const PAINT = {
             PS.glyph(24, 22, 0x1405 ); // ᐅ
             PS.glyph(25, 22, 0x1405 ); // ᐅ
             PS.glyph(24, 23, 0x1405 ); // ᐅ
-            PS.glyph(25, 23, 0xFFFF ); // white
+            PS.glyph(25, 23, 0x2010 ); // -
 
             PS.exec(24, 22, PAINT.select);
             PS.exec(25, 22, PAINT.select);
