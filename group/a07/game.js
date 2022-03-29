@@ -98,7 +98,7 @@ const GAME = {
 		BALL.updateAllBalls();
 
 		// The only function that needs update
-		PAINT.drawMusicBar();
+		PAINT.updateMusicBar();
 
 		PAINT.updateBallCountPanel();
 	},
@@ -146,7 +146,10 @@ PS.touch = function( x, y, data, options ) {
 		// First check if in playground area
 		if (BALL.isInPlaygroundArea(x,y)){
 
+			if (PAINT.music_playing) PAINT.music_playing = false;
 
+			// If pinball on, does not process any location there
+			if (PAINT.pinball_on && PAINT.isInPinballSpriteArea(x,y)) return;
 
 			// If yes, dragging turn on
 			PAINT.dragging = true;
@@ -204,6 +207,9 @@ PS.enter = function( x, y, data, options ) {
 	// Only process when the ball is in playground area
 	if (BALL.isInPlaygroundArea(x,y)) {
 
+		// If pinball on, does not process any location there
+		if (PAINT.pinball_on && PAINT.isInPinballSpriteArea(x,y)) return;
+
 		PAINT.underColor = PS.color( x, y );
 		PS.color( x, y, PAINT.color );
 
@@ -237,7 +243,8 @@ PS.exit = function( x, y, data, options ) {
 	// Show instructions when mouse is first moved
 	if ( BALL.isInPlaygroundArea(x,y))
 	{
-
+		// If pinball on, does not process any location there
+		if (PAINT.pinball_on && PAINT.isInPinballSpriteArea(x,y)) return;
 
 		PS.color( x, y, PAINT.underColor );
 	}

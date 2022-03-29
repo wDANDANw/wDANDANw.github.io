@@ -45,12 +45,10 @@ const PAINT = {
     ball_panel_ball_coord_list_index: 0, // The current index of the ball panel list. Used for updating the ball paints
     ball_update_number : 0, // Number of balls to update in this frame (number of balls to be drawn in the ball panel)
 
-    pinball_sprite : null, // The reference to the pinball sprite
-    pinball_x : 10, // The x-coordinate of the pinball
-    pinball_direction: 0, // the movement direction of the pinball -1 = left, 0 = mid, 1 = right
     pinball_on : false, // Pinball on/off
 
     music_bar_list : [], // The music bar list
+    music_playing : false, // Mask for playing music after clicked the music bar
     // FUNCTIONS
 
     // PAINT.select ( x, y, data )
@@ -297,6 +295,9 @@ const PAINT = {
         // Draw the balls
         _drawBallCountPanel();
 
+        // Draw the balls
+        _drawMusicBarPanel();
+
         // Draw the speed panel
         _drawSpeeds();
 
@@ -350,7 +351,7 @@ const PAINT = {
          * Function to draw and initialize the ball count panel
          * Will initialize PAINT::ball_panel related variables
          */
-        function _drawBallCountPanel () {
+        function _drawBallCountPanel() {
 
             // Order: from top to bottom, from left to right
             // Need to be row first and column next to make the coordinates in a specific order when refilling
@@ -397,6 +398,24 @@ const PAINT = {
                 PS.exec(x, y, PAINT.select);
             }
         };
+
+        /**
+         * Function to initialize the music bar panel
+         * @private
+         */
+        function _drawMusicBarPanel() {
+
+            for ( let col = 24 ; col < 30 ; col ++) {
+                for ( let row = 10 ; row < 16 ; row ++) {
+
+                    // Add the data and exec function of the beads
+                    PS.data(col, row, GAME_CONFIG.BEAD_BACKGROUND_COLOR);
+                    PS.exec(col, row, PAINT.select);
+
+                }
+            }
+
+        }
 
 
         /**
@@ -477,29 +496,62 @@ const PAINT = {
      */
     showPinball : function (show) {
 
-        if (!PAINT.pinball_sprite) {
-            PAINT.pinball_sprite = PS.spriteSolid(12, 1);
-            PS.spriteSolidColor( PAINT.pinball_sprite , PS.COLOR_BLACK );
-            PS.spriteMove( PAINT.pinball_sprite, PAINT.pinball_x, 28);
-            return;
-        }
-
-        // Cannot use PS.spriteShow(PAINT.pinball_sprite, show) because it only greys out
         if (show) {
-            PS.spriteMove( PAINT.pinball_sprite, PAINT.pinball_x, 28);
+            for ( let col = 10 ; col < 22 ; col ++) {
+                PS.color( col , 28 , PS.COLOR_BLACK);
+            }
         } else {
-            PS.spriteMove( PAINT.pinball_sprite, 0, 0); // Move away..
+            for ( let col = 10 ; col < 22 ; col ++) {
+                PAINT.clearBead([col , 28] );
+            }
         }
 
     },
 
     /**
      * Function to draw the music bar
+     * //TODO: Hard drawing every frame now
      */
-    drawMusicBar : function () {
+    updateMusicBar : function () {
 
         if (PAINT.music_bar_list.length < 1) {
             return
+        }
+
+        let clearing_last_note = false;
+
+        if (PAINT.music_playing) { // Playing stored music
+
+            const first_color = PAINT.music_bar_list.shift(); // Get the first color
+            clearing_last_note = true;
+
+            switch (first_color) {
+                case PAINT.COLORS[0]:
+                    PS.audioPlay( PS.piano(40) );
+                    break;
+                case PAINT.COLORS[1]:
+                    PS.audioPlay( PS.piano(42) );
+                    break;
+                case PAINT.COLORS[2]:
+                    PS.audioPlay( PS.piano(44) );
+                    break;
+                case PAINT.COLORS[3]:
+                    PS.audioPlay( PS.piano(45) );
+                    break;
+                case PAINT.COLORS[4]:
+                    PS.audioPlay( PS.piano(47) );
+                    break;
+                case PAINT.COLORS[5]:
+                    PS.audioPlay( PS.piano(49) );
+                    break;
+                case PAINT.COLORS[6]:
+                    PS.audioPlay( PS.piano(51) );
+                    break;
+                default:
+                    debug("updateMusicBar::playing: Error - no notes detected");
+                    break;
+            }
+
         }
 
         // Draw the music bar from lower right to upper left
@@ -520,6 +572,11 @@ const PAINT = {
                 row --;
             }
         }
+
+        if (clearing_last_note) {
+            PAINT.clearBead([col,row],false);
+        }
+
     },
 
     /**
@@ -701,6 +758,9 @@ const PAINT = {
         // Play click sound
         PS.audioPlay( "fx_click" );
 
+        // For the music bar, if clicked in the music bar area, then turn on. Else, turn off (should turn off when clicking any another mode)
+        if (PAINT.music_playing && !PAINT.isInMusicBarPanel(x,y)) PAINT.music_playing = false;
+
 
         if (PAINT.isInColorPanel(x, y)) { // Color Panel Area
 
@@ -730,9 +790,9 @@ const PAINT = {
             // Subtracted 1 from y value because the add ball adds ball at next position
             BALL.addBall( (PS.random(12 - 1) + 10) , (PS.random(3 - 1) + 2 - 1) );
 
-        } else if (PAINT.isInMusicBarPanel(x,y)) { // Music Bar Area
+        } else if (PAINT.isInMusicBarPanel(x,y)) { // Play Music
 
-            // Trigger Music Bar Mode
+            PAINT.music_playing = true;
 
         } else if (PAINT.isInPinballPanel(x,y)) { // Pinball Area
 
