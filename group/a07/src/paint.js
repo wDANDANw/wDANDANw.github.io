@@ -431,10 +431,10 @@ const PAINT = {
         function _drawSpeeds() {
 
             // Draw 1X
-            PS.glyph(24, 18, 0x1F40C ); // Snail 🐌
-            PS.glyph(25, 18, 0x1F40C ); // Snail 🐌
-            PS.glyph(24, 19, ">" ); // >
-            PS.glyph(25, 19, "1" ); // 1
+            PS.glyph(24, 18, 0x1405 ); // ᐅ
+            PS.glyph(25, 18, 0xFFFFFF ); // white
+            PS.glyph(24, 19, 0xFFFFFF ); // white
+            PS.glyph(25, 19, 0xFFFFFF ); // white
 
             PS.exec(24, 18, PAINT.select);
             PS.exec(25, 18, PAINT.select);
