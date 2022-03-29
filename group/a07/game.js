@@ -146,6 +146,8 @@ PS.touch = function( x, y, data, options ) {
 		// First check if in playground area
 		if (BALL.isInPlaygroundArea(x,y)){
 
+
+
 			// If yes, dragging turn on
 			PAINT.dragging = true;
 
@@ -235,6 +237,8 @@ PS.exit = function( x, y, data, options ) {
 	// Show instructions when mouse is first moved
 	if ( BALL.isInPlaygroundArea(x,y))
 	{
+
+
 		PS.color( x, y, PAINT.underColor );
 	}
 

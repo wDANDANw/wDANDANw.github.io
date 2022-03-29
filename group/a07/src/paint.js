@@ -46,8 +46,9 @@ const PAINT = {
     ball_update_number : 0, // Number of balls to update in this frame (number of balls to be drawn in the ball panel)
 
     pinball_sprite : null, // The reference to the pinball sprite
-    pinball_x : 25, // The x-coordinate of the pinball
+    pinball_x : 10, // The x-coordinate of the pinball
     pinball_direction: 0, // the movement direction of the pinball -1 = left, 0 = mid, 1 = right
+    pinball_on : false, // Pinball on/off
 
     music_bar_list : [], // The music bar list
     // FUNCTIONS
@@ -302,9 +303,6 @@ const PAINT = {
         // Draw Pinball Panel
         _drawPinball();
 
-        // Draw the pinball
-        PAINT.drawPinball(25);
-
         // Helper functions
 
         /**
@@ -369,7 +367,7 @@ const PAINT = {
             // Area: 6x6
             for ( let col = 24 ; col < 30 ; col ++) {
                 for ( let row = 2 ; row < 8 ; row ++) {
-                    _initializeOneBallPanelGrid( col, row )
+                    _initializeOneBallPanelGrid( col, row );
                 }
             }
 
@@ -454,13 +452,19 @@ const PAINT = {
         }
 
         /**
-         *
+         * Draw the pinball icon and area
          * @private
          */
         function _drawPinball() {
+
+            // Draw pinball icon
+            const pinball_icon = PS.spriteSolid(4, 1);
+            PS.spriteSolidColor( pinball_icon , PS.COLOR_BLACK );
+            PS.spriteMove( pinball_icon, 25, 28);
+
+            // Add exec
             for ( let col = 24 ; col < 30; col ++) {
                 for (let row = 26; row < 30; row ++) {
-                    PS.data( col, row, PS.COLOR_BLACK);
                     PS.exec( col, row, PAINT.select);
                 }
             }
@@ -470,37 +474,23 @@ const PAINT = {
 
     /**
      * Function to draw the pinball
-     * @param x: the x coordinate of the left side of the pinball
      */
-    drawPinball : function (x) {
+    showPinball : function (show) {
 
         if (!PAINT.pinball_sprite) {
-            PAINT.pinball_sprite = PS.spriteSolid(4, 1);
+            PAINT.pinball_sprite = PS.spriteSolid(12, 1);
             PS.spriteSolidColor( PAINT.pinball_sprite , PS.COLOR_BLACK );
             PS.spriteMove( PAINT.pinball_sprite, PAINT.pinball_x, 28);
+            return;
         }
 
-        if (x < PAINT.pinball_x) { // Moving leftwards
-            if (x < 10) {
-                PS.spriteMove( PAINT.pinball_sprite, 10, 28);
-                PAINT.pinball_x = 10;
-                PAINT.pinball_direction = 0;
-            } else {
-                PS.spriteMove(PAINT.pinball_sprite, x, 28);
-                PAINT.pinball_x = x;
-                PAINT.pinball_direction = -1;
-            }
-        } else { // Moving rightwards or stay not moving
-            if (x > 28) {
-                PS.spriteMove(PAINT.pinball_sprite, 28, 28);
-                PAINT.pinball_x = 28;
-                PAINT.pinball_direction = 0;
-            } else {
-                PS.spriteMove(PAINT.pinball_sprite, x, 28);
-                PAINT.pinball_x = x;
-                PAINT.pinball_direction = 1;
-            }
+        // Cannot use PS.spriteShow(PAINT.pinball_sprite, show) because it only greys out
+        if (show) {
+            PS.spriteMove( PAINT.pinball_sprite, PAINT.pinball_x, 28);
+        } else {
+            PS.spriteMove( PAINT.pinball_sprite, 0, 0); // Move away..
         }
+
     },
 
     /**
@@ -654,14 +644,14 @@ const PAINT = {
         } else if (PAINT.ball_update_number < 0) {
 
             for ( let i = Math.abs(PAINT.ball_update_number) ; i > 0 ; i-- ){
-                PAINT.ball_panel_ball_coord_list_index -= 1;
                 PAINT.clearBead(PAINT.ball_panel_ball_coord_list[PAINT.ball_panel_ball_coord_list_index], false);
+                PAINT.ball_panel_ball_coord_list_index -= 1;
             }
 
         } else {
 
             for ( let i = Math.abs(PAINT.ball_update_number) ; i > 0 ; i-- ){
-                PAINT.ball_panel_ball_coord_list_index +=1;
+                PAINT.ball_panel_ball_coord_list_index += 1;
                 PAINT.drawBall(PAINT.ball_panel_ball_coord_list[PAINT.ball_panel_ball_coord_list_index], 1);
             }
 
@@ -742,11 +732,11 @@ const PAINT = {
 
         } else if (PAINT.isInMusicBarPanel(x,y)) { // Music Bar Area
 
-            // Turn on / off the pinball
+            // Trigger Music Bar Mode
 
         } else if (PAINT.isInPinballPanel(x,y)) { // Pinball Area
 
-            // Turn on / off the pinball
+            PAINT.showPinball(PAINT.pinball_on ^= true); // == PAINT.pinball_on = !PAINT.pinball_on
 
         } else if (PAINT.isInSppedPanel1(x,y)) { // Change speed normal
 
@@ -812,6 +802,10 @@ const PAINT = {
 
     isInSppedPanel4 : function (x, y) {
         return (x >= 28 && x < 30) && (y >= 22 && y < 24);
+    },
+
+    isInPinballSpriteArea : function (x, y) {
+        return (x >= 10 && x < 22) && (y === 28);
     },
 
 
