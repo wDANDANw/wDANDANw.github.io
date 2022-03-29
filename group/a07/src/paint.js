@@ -233,18 +233,18 @@ const PAINT = {
                 |🧹🧹🧹🧹|
                 ╰ ━ ━ ━ ━ ╯
              */
-            PS.glyph(2, 28, 0x2B6E); // ⭮
+            PS.glyph(2, 28, "|"); // |
             PS.glyph(3, 28, 0x2B6E); // ⭮
             PS.glyph(4, 28, 0x2B6E); // ⭮
-            PS.glyph(5, 28, 0x2B6E); // ⭮
-            PS.glyph(6, 28, 0x2B6E); // ⭮
-            PS.glyph(7, 28, 0x2B6E); // ⭮
-            PS.glyph(2, 29, 0x2B6E); // ⭮
-            PS.glyph(3, 29, 0x2B6E); // ⭮
-            PS.glyph(4, 29, 0x2B6E); // ⭮
-            PS.glyph(5, 29, 0x2B6E); // ⭮
-            PS.glyph(6, 29, 0x2B6E); // ⭮
-            PS.glyph(7, 29, 0x2B6E); // ⭮
+            PS.glyph(5, 28, 0x2B6F); // ⭯
+            PS.glyph(6, 28, 0x2B6F); // ⭯
+            PS.glyph(7, 28, "|"); // |
+            PS.glyph(2, 29, 0x2570) // ╭
+            PS.glyph(3, 29, 0x2501); // ━
+            PS.glyph(4, 29, 0x2501); // ━
+            PS.glyph(5, 29, 0x2501); // ━
+            PS.glyph(6, 29, 0x2501); // ━
+            PS.glyph(7, 29, 0x256F); // ╮
 
             PS.exec(2, 28, PAINT.reset );
             PS.exec(3, 28, PAINT.reset );
