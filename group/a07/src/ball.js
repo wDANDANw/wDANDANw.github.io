@@ -260,9 +260,10 @@ const BALL = {
 
         // Then destroy all balls in the list
         while (BALL.destroy_list.length > 0) {
+
             const index_to_be_deleted = BALL.destroy_list.pop();
             BALL.ball_list.splice(index_to_be_deleted, 1);
-            PAINT.updateBallCountPanel(+1);
+            PAINT.changeBallAmount(+1);
 
         }
     },
@@ -276,11 +277,14 @@ const BALL = {
 
         if (!BALL.beadIsMovable([x,y])) return
 
-        const new_ball = [x, y] // Assuming a ball is a 2 element array now
-        BALL.ball_list.push(new_ball);
+        if (PAINT.changeBallAmount(-1)) { // Can add ball
 
-        PAINT.drawBall([x,y]);
-        PAINT.updateBallCountPanel(-1);
+            const new_ball = [x, y] // Assuming a ball is a 2 element array now
+            BALL.ball_list.push(new_ball);
+
+            PAINT.drawBall([x,y]);
+
+        }
 
         debug("Added a new ball!", 1);
     },
