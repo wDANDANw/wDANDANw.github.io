@@ -646,28 +646,22 @@ const PAINT = {
      */
     updateBallCountPanel : function () {
 
-        // If update is negative, remove balls. is 0, unchanged. is positive, draw balls.
-        if (PAINT.ball_update_number === 0) {
+        let local_index;
+        const balls_to_draw = PAINT.ball_panel_ball_coord_list_index + PAINT.ball_update_number + 1;
+        const coord_list = PAINT.ball_panel_ball_coord_list;
 
-            return; // No change
-
-        } else if (PAINT.ball_update_number < 0) {
-
-            for ( let i = Math.abs(PAINT.ball_update_number) ; i > 0 ; i-- ){
-                PAINT.ball_panel_ball_coord_list_index -= 1;
-                PAINT.clearBead(PAINT.ball_panel_ball_coord_list[PAINT.ball_panel_ball_coord_list_index], false);
-            }
-
-        } else {
-
-            for ( let i = Math.abs(PAINT.ball_update_number) ; i > 0 ; i-- ){
-                PAINT.ball_panel_ball_coord_list_index +=1;
-                PAINT.drawBall(PAINT.ball_panel_ball_coord_list[PAINT.ball_panel_ball_coord_list_index], 1);
-            }
-
+        // First, clear the whole panel.
+        for ( local_index = 0 ; local_index < PAINT.ball_numbers ; local_index ++ ) {
+            PAINT.clearBead(coord_list[local_index], false);
         }
 
-        // Reset caching number
+        // Then, draw balls_to_draw amount of balls
+        for ( local_index = 0 ; local_index < balls_to_draw ; local_index ++ ) {
+            PAINT.drawBall(coord_list[local_index], 1);
+        }
+
+        // Update variables
+        PAINT.ball_panel_ball_coord_list_index = local_index;
         PAINT.ball_update_number = 0;
 
     },
