@@ -98,7 +98,9 @@ const GAME = {
 		BALL.updateAllBalls();
 
 		// The only function that needs update
-		PAINT.drawMusicBar();
+		PAINT.updateMusicBar();
+
+		PAINT.updateBallCountPanel();
 	},
 
 	changeGameSpeed : function (speed_multiplier) {
@@ -133,29 +135,44 @@ This function doesn't have to do anything. Any value returned is ignored.
 PS.touch = function( x, y, data, options ) {
 	"use strict";
 
-	if (PAINT.current > 8) { // Pinball Mode
-		PAINT.drawPinball(x);
-	} else if (PAINT.current == 8) { // Ball Mode
-		console.log("Ball Mode")
-		if (BALL.isInPlaygroundArea(x,y) && PAINT.ball_numbers > 0) {
-			BALL.addBall(x, y);
-		}
-	} else if (PAINT.current == 7) { // Eraser Mode
+	if (PAINT.current < 0) { // Error
+
+		debug("PS.touch::Error: current < 0");
+
+	} else if (PAINT.current <= 7) { // Color Mode
+
+		debug(("Color " + PAINT.current + " selected"), 1);
+
+		// First check if in playground area
 		if (BALL.isInPlaygroundArea(x,y)){
+
+			if (PAINT.music_playing) PAINT.music_playing = false;
+
+			// If pinball on, does not process any location there
+			if (PAINT.pinball_on && PAINT.isInPinballSpriteArea(x,y)) return;
+
+			// If yes, dragging turn on
 			PAINT.dragging = true;
-			PAINT.clearBead([x,y])
-			PAINT.underColor = PS.COLOR_WHITE;
-			PS.color( x, y, PS.COLOR_WHITE );
-		}
-	} else {
-		if (BALL.isInPlaygroundArea(x,y)){
-			PAINT.dragging = true;
+
+			// No use because PAINT.color is assigned to both eraser and color in PAINT::Select
+			// const current_color = (PAINT.current === 7) ? GAME_CONFIG.BEAD_BACKGROUND_COLOR : PAINT.color;
+
+			// Eraser special handling
+			if (PAINT.current === 7)  PAINT.clearBead([x,y]);
+
+			// General Handling
 			PAINT.underColor = PAINT.color;
 			PS.color( x, y, PAINT.color );
 			PS.data( x, y, PAINT.color);
-			console.log(x,y,PS.data(x,y))
+
 		}
+
+	} else {
+
+		debug("PS::touch:Error: curren > 7")
+
 	}
+
 };
 
 /*
@@ -187,27 +204,25 @@ This function doesn't have to do anything. Any value returned is ignored.
 PS.enter = function( x, y, data, options ) {
 	"use strict";
 
-	if (PAINT.current == 9) {
+	// Only process when the ball is in playground area
+	if (BALL.isInPlaygroundArea(x,y)) {
 
-		PAINT.drawPinball(x);
+		// If pinball on, does not process any location there
+		if (PAINT.pinball_on && PAINT.isInPinballSpriteArea(x,y)) return;
 
+		PAINT.underColor = PS.color( x, y );
+		PS.color( x, y, PAINT.color );
+
+		if ( PAINT.dragging )
+		{
+			PS.data ( x, y, PAINT.color);
+			PAINT.underColor = PAINT.color;
+		}
 
 	} else {
-		if (BALL.isInPlaygroundArea(x,y))
-		{
-			PAINT.underColor = PS.color( x, y );
-			PS.color( x, y, PAINT.color );
 
-			if ( PAINT.dragging )
-			{
-				PS.data ( x, y, PAINT.color);
-				PAINT.underColor = PAINT.color;
-			}
-		}
-		else
-		{
-			PAINT.dragging = false; // stop dragging if over palette
-		}
+		PAINT.dragging = false;
+
 	}
 
 };
@@ -226,12 +241,14 @@ PS.exit = function( x, y, data, options ) {
 	"use strict";
 
 	// Show instructions when mouse is first moved
-
-
 	if ( BALL.isInPlaygroundArea(x,y))
 	{
+		// If pinball on, does not process any location there
+		if (PAINT.pinball_on && PAINT.isInPinballSpriteArea(x,y)) return;
+
 		PS.color( x, y, PAINT.underColor );
 	}
+
 };
 
 /*

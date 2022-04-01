@@ -17,7 +17,8 @@ const BALL = {
 
     // Constants
     BALL_COLOR : 0xA9A9A9,		            // Ball Color
-    BOTTOM_ROW: GAME_CONFIG.HEIGHT, 		// The bottom row at where ball will vanish
+    BOTTOM_ROW: GAME_CONFIG.HEIGHT - 2, 	// The bottom row at where ball will vanish
+    FORCE_DESTRoY : 10,                     // Number of balls to enable force destroy [Maximum number of balls in playground]
     // End of Constant Section
 
     // Variables
@@ -73,36 +74,33 @@ const BALL = {
         // Move the ball to next position
         if (ball[2] !== undefined) { // Is bouncing
 
-            if (ball[2] === -1 && x === 10) {
+            if (ball[2] === -1 && x === 10) { // If bouncing left and x === 10, change bounce X direction
                 ball[2] = 1;
             }
 
-            if (ball[2] === 1 && x === 21) {
+            if (ball[2] === 1 && x === 21) { // If bouncing right and x === 21, change bounce X direction
                 ball[2] = -1;
             }
 
-            if (ball[3] === -1 && y === 2) {
+            if (ball[3] === -1 && y === 2) { // If bouncing up and at y === 2, change bounce Y direction
                 ball[3] = 1;
             }
 
-            if (y === 27) {
-                if (Math.abs(x - PAINT.pinball_x) < 4) {
+            if (y === 27) { // Check if pinball on
+                if (PAINT.pinball_on) {
                     ball[3] = -1;
-                    ball[2] = PAINT.pinball_direction;
+                    ball[2] = PS.random(3) - 2; // 1 - 2 = -1 , 2 - 2 = 0 , 3 - 2 = +1
                 }
             }
 
-                BALL.move(ball, ball_index, [x + ball[2], y + ball[3]]);
+            BALL.move(ball, ball_index, [x + ball[2], y + ball[3]]);
 
-        } else if ( (y === 27 && PAINT.current === 9) ) { // Check pinball
+        } else if ( (y === 27 && PAINT.pinball_on) ) { // Not bouncing, but check pinball
 
-            console.log("bouncing!")
-
-            if (Math.abs(x - PAINT.pinball_x) < 4) {
-                BALL.ball_list[ball_index][2] = PAINT.pinball_direction;
-                BALL.ball_list[ball_index][3] = -1;
-                BALL.move(ball, ball_index, [x + PAINT.pinball_direction, y - 1])
-            }
+            const random_x_bouncing_direction = PS.random(3) - 2;
+            BALL.ball_list[ball_index][2] = random_x_bouncing_direction;
+            BALL.ball_list[ball_index][3] = -1;
+            BALL.move(ball, ball_index, [x + random_x_bouncing_direction, y - 1])
 
         } else if (y < BALL.BOTTOM_ROW - 1) { // Normal cases
 
@@ -114,8 +112,6 @@ const BALL = {
             // Last row processes
             // Now only erase the old bead
             PS.color( ball[0], ball[1], GAME_CONFIG.BEAD_BACKGROUND_COLOR );
-
-
             BALL.destroy(ball_index);
 
         }
@@ -135,10 +131,6 @@ const BALL = {
             PAINT.clearBead(old_coord);
             BALL.destroy(ball_index);
             return
-        }
-
-        if (ball[2] !== undefined) { // bouncing
-
         }
 
         // Clear the old bead
@@ -164,6 +156,7 @@ const BALL = {
 
         const color = PS.data(x,y);
         if (color === 0xFF) return;
+        let should_continue_music = false;
 
         switch (color) {
             case PAINT.COLORS[0]:
@@ -196,8 +189,11 @@ const BALL = {
                 break;
             default:
                 debug("Default in collision", 2);
+                should_continue_music = true;
                 break;
         }
+
+        if (PAINT.music_playing && !should_continue_music) PAINT.music_playing = false;
 
     },
 
@@ -211,7 +207,7 @@ const BALL = {
         const y = coord[1];
 
         if ( (x < 10 || x >= 22) || (y < 2 || y >= 30) ) {
-            debug("This place is not movable!")
+            debug((x + " , " + y + " is not movable!"))
             return false;
         } else if ( BALL.ball_list.filter( (ball) => { return (ball[0] == x && ball[1] == y)}).length > 0){ // If there are balls with same position
             return false;
@@ -229,14 +225,22 @@ const BALL = {
     },
 
     /**
-     *
+     * Function to instantly destroy all balls in the list
+     * Since needs instant destroy, cannot use the destroy balls in list function
      */
-    destroyAll : function () {
+    destroyAll : function (from_reset_ball_count_panel = false) {
         debug("BALL:destoryAll: Destroying all!", 1)
 
+        // Destroy all balls by empty and initialize those two lists
         BALL.ball_list = [];
         BALL.destroy_list = [];
-        BALL.destroying_all = true;
+
+        // Then turn the flag to false
+        BALL.destroying_all = false;
+
+        // After this, tell PAINT::BallCountPanel that balls reset. Therefore, update the ball count panel accordingly.
+        if (!from_reset_ball_count_panel) PAINT.resetBallCountPanel();
+
     },
 
     /**
@@ -246,25 +250,16 @@ const BALL = {
      */
     destroyBallsInDestroyList : function () {
 
-        // Destroying all. Will remove and empty everything
-        if (BALL.destroying_all) {
+        // First sort the destroy list in ascending order.
+        // This will ensure that previous deleted index will not impact next index
+        BALL.destroy_list.sort( (a, b) => {return a - b}) // Sort takes a comparison function
 
-            PAINT.reset();
-            BALL.destroying_all = false;
+        // Then destroy all balls in the list
+        while (BALL.destroy_list.length > 0) {
 
-        } else { // Process the destory list
-
-            // First sort the destroy list in ascending order.
-            // This will ensure that previous deleted index will not impact next index
-            BALL.destroy_list.sort( (a, b) => {return a - b}) // Sort takes a comparison function
-
-            // Then destroy all balls in the list
-            while (BALL.destroy_list.length > 0) {
-                const index_to_be_deleted = BALL.destroy_list.pop();
-                BALL.ball_list.splice(index_to_be_deleted, 1);
-                PAINT.updateBallPanel(+1);
-        }
-
+            const index_to_be_deleted = BALL.destroy_list.pop();
+            BALL.ball_list.splice(index_to_be_deleted, 1);
+            PAINT.changeBallAmount(+1);
 
         }
     },
@@ -276,13 +271,18 @@ const BALL = {
      */
     addBall : function(x, y) {
 
+        if (PAINT.music_playing) PAINT.music_playing = false;
+
         if (!BALL.beadIsMovable([x,y])) return
 
-        const new_ball = [x, y] // Assuming a ball is a 2 element array now
-        BALL.ball_list.push(new_ball);
+        if (PAINT.changeBallAmount(-1)) { // Can add ball
 
-        PAINT.drawBall([x,y]);
-        PAINT.updateBallPanel(-1);
+            const new_ball = [x, y] // Assuming a ball is a 2 element array now
+            BALL.ball_list.push(new_ball);
+
+            PAINT.drawBall([x,y]);
+
+        }
 
         debug("Added a new ball!", 1);
     },
