@@ -5,7 +5,7 @@
 const DM = {
 
     //region Constants
-    DEFAULT_TEXT: "That Year, That Scene, That Choice" ,        // Default status text
+    DEFAULT_TEXT: "The Rally" ,                                 // Default status text
     STATUS_COLOR: PS.COLOR_BLACK,                               // Default status text color
 
     //endregion

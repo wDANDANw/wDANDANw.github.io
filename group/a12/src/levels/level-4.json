@@ -1,19 +1,134 @@
 {
+	"level" : 4,
 	"player" : {
-		"position" : [ ]
+		"position" : {
+			"x" : 4,
+			"y" : 15
+		}
+	},
+	"dest" : {
+		"position" : {
+			"x" : 18,
+			"y" : 14
+		},
+		"data" : {
+			"type" : "dest",
+			"tags" : [
+				"next_level"
+			]
+		}
 	},
 	"platforms" : {
-		"ground" : [
-			{
-				"upper-left" : [ ],
-				"lower-right" : [ ]
+		"ground1" : {
+			"position" : {
+				"upper_left" : {
+					"x" : 1,
+					"y" : 16
+				},
+				"lower_right" : {
+					"x" : 19,
+					"y" : 16
+				}
+			},
+			"data" : {
+				"type" : "ground",
+				"tags" : [
+					"ground"
+				],
+				"color" : "0x000000"
 			}
-		]
+		},
+		"ground2" : {
+			"position" : {
+				"upper_left" : {
+					"x" : 13,
+					"y" : 15
+				},
+				"lower_right" : {
+					"x" : 19,
+					"y" : 15
+				}
+			},
+			"data" : {
+				"type" : "ground",
+				"tags" : [
+					"ground"
+				],
+				"color" : "0x000000"
+			}
+		},
+		"ground3" : {
+			"position" : {
+				"upper_left" : {
+					"x" : 18,
+					"y" : 13
+				},
+				"lower_right" : {
+					"x" : 19,
+					"y" : 13
+				}
+			},
+			"data" : {
+				"type" : "ground",
+				"tags" : [
+					"ground"
+				],
+				"color" : "0x000000"
+			}
+		},
+		"ground4" : {
+			"position" : {
+				"upper_left" : {
+					"x" : 19,
+					"y" : 14
+				},
+				"lower_right" : {
+					"x" : 19,
+					"y" : 14
+				}
+			},
+			"data" : {
+				"type" : "ground",
+				"tags" : [
+					"ground"
+				],
+				"color" : "0x000000"
+			}
+		}
 	},
-	"unlocked_buttons" : {
-	
+	"buttons" : {
+		"unlocked" : {
+			"arrows" : [
+				"right"
+			]
+		}
 	},
 	"pickups" : {
-    
-    }
+		"up_arrow" : {
+			"position" : {
+				"x" : 9,
+				"y" : 15
+			},
+			"data" : {
+				"type" : "arrow_up",
+				"tags" : [
+					"arrow_pickup",
+					"up"
+				]
+			}
+		},
+		"left_arrow" : {
+			"position" : {
+				"x" : 12,
+				"y" : 15
+			},
+			"data" : {
+				"type" : "arrow_left",
+				"tags" : [
+					"arrow_pickup",
+					"left"
+				]
+			}
+		}
+	}
 }

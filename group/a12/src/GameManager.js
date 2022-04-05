@@ -124,7 +124,7 @@ function loadSounds() {
 
 // Load the tutorial level to start
 function start() {
-    LM.loadLevel(3);
+    LM.loadLevel(5);
 }
 
 //endregion

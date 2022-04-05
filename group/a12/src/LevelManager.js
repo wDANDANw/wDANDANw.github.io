@@ -150,7 +150,9 @@ function drawDestination(x , y , data) {
 // Function to draw platforms in a level
 function drawPlatforms(platforms) {
 
-    for ( let [ platform_name , platform_data ] of Object.entries( platforms ) ) {
+    const local_copy = JSON.parse(JSON.stringify(platforms)); // Deep Copy
+
+    for ( let [ platform_name , platform_data ] of Object.entries( local_copy ) ) {
 
         const col_start = platform_data.position.upper_left.x;
         const row_start = platform_data.position.upper_left.y;
@@ -180,10 +182,12 @@ function drawOnePlatformBead(x , y , data) {
 // Function to draw pickups
 function drawPickups(pickups) {
 
-    if ( Object.keys( pickups ).length > 0 ) {
+    const local_copy = JSON.parse(JSON.stringify(pickups)); // Deep Copy
+
+    if ( Object.keys( local_copy ).length > 0 ) {
 
         // Values are the position + data dict
-        Object.values( pickups ).forEach( pickup => {
+        Object.values( local_copy ).forEach( pickup => {
 
             const x = pickup.position.x;
             const y = pickup.position.y;
