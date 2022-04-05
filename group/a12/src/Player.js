@@ -60,7 +60,9 @@ const Player = {
 
             let local_x , local_y;
 
-            Player.body_list.forEach( body_coord => {
+            for (let i = 0; i < Player.body_list.length ; i++) {
+
+                const body_coord = Player.body_list[i];
 
                 // Erase previous bead
                 local_x = body_coord[0] + Player.x;
@@ -72,8 +74,8 @@ const Player = {
                 local_x = body_coord[0] + x;
                 local_y = body_coord[1] + y;
 
-                processCollide( local_x , local_y)
-            } )
+                if (!processCollide( local_x , local_y)) return;
+            }
 
             Player.x = x;
             Player.y = y;
@@ -118,6 +120,8 @@ const Player = {
         Player.size = 1;
         Player.jumping = false;
         Player.can_jump = true;
+        Player.x = 1;
+        Player.y = 1;
     }
 
     //endregion
