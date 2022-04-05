@@ -1,19 +1,141 @@
 {
+	"level" : 3,
 	"player" : {
-		"position" : [ ]
+		"position" : {
+			"x" : 4,
+			"y" : 15
+		}
+	},
+	"dest" : {
+		"position" : {
+			"x" : 1,
+			"y" : 5
+		},
+		"data" : {
+			"type" : "dest",
+			"tags" : [
+				"end_game"
+			]
+		}
 	},
 	"platforms" : {
-		"ground" : [
-			{
-				"upper-left" : [ ],
-				"lower-right" : [ ]
+		"ground1" : {
+			"position" : {
+				"upper_left" : {
+					"x" : 1,
+					"y" : 6
+				},
+				"lower_right" : {
+					"x" : 7,
+					"y" : 6
+				}
+			},
+			"data" : {
+				"type" : "ground",
+				"tags" : [
+					"ground"
+				],
+				"color" : "0x000000"
 			}
-		]
+		},
+		"ground2" : {
+			"position" : {
+				"upper_left" : {
+					"x" : 7,
+					"y" : 9
+				},
+				"lower_right" : {
+					"x" : 13,
+					"y" : 9
+				}
+			},
+			"data" : {
+				"type" : "ground",
+				"tags" : [
+					"ground"
+				],
+				"color" : "0x000000"
+			}
+		},
+		"ground3" : {
+			"position" : {
+				"upper_left" : {
+					"x" : 16,
+					"y" : 9
+				},
+				"lower_right" : {
+					"x" : 19,
+					"y" : 9
+				}
+			},
+			"data" : {
+				"type" : "ground",
+				"tags" : [
+					"ground"
+				],
+				"color" : "0x000000"
+			}
+		},
+		"ground4" : {
+			"position" : {
+				"upper_left" : {
+					"x" : 12,
+					"y" : 12
+				},
+				"lower_right" : {
+					"x" : 19,
+					"y" : 12
+				}
+			},
+			"data" : {
+				"type" : "ground",
+				"tags" : [
+					"ground"
+				],
+				"color" : "0x000000"
+			}
+		},
+		"ground5" : {
+			"position" : {
+				"upper_left" : {
+					"x" : 1,
+					"y" : 16
+				},
+				"lower_right" : {
+					"x" : 19,
+					"y" : 16
+				}
+			},
+			"data" : {
+				"type" : "ground",
+				"tags" : [
+					"ground"
+				],
+				"color" : "0x000000"
+			}
+		}
 	},
-	"unlocked_buttons" : {
-	
+	"buttons" : {
+		"unlocked" : {
+			"arrows" : [
+				"right",
+				"left"
+			]
+		}
 	},
 	"pickups" : {
-    
-    }
+		"up_arrow" : {
+			"position" : {
+				"x" : 19,
+				"y" : 15
+			},
+			"data" : {
+				"type" : "arrow_up",
+				"tags" : [
+					"arrow_pickup",
+					"up"
+				]
+			}
+		}
+	}
 }

@@ -50,6 +50,7 @@ Any value returned is ignored.
 
 import GM from "./src/GameManager.js";
 import Player from "./src/Player.js";
+import BM from "./src/ButtonManager.js";
 
 PS.init = function( system, options ) {
 
@@ -159,8 +160,15 @@ This function doesn't have to do anything. Any value returned is ignored.
 PS.keyDown = function( key, shift, ctrl, options ) {
 
     //TODO: Change to feed into the game loop and then update
-    if (key === PS.KEY_ARROW_RIGHT) {
+    if (key === PS.KEY_ARROW_RIGHT && Player.unlocked.includes("right")) {
         Player.move(Player.x + 1, Player.y);
+        BM.drawArrows(BM.arrows["right"],BM.BUTTON_STATUS.ACTIVE);
+    } else if (key === PS.KEY_ARROW_LEFT && Player.unlocked.includes("left")) {
+        Player.move(Player.x - 1, Player.y);
+        BM.drawArrows(BM.arrows["left"],BM.BUTTON_STATUS.ACTIVE);
+    } else if (key === PS.KEY_ARROW_UP && Player.unlocked.includes("up")) {
+        Player.jump();
+        BM.drawArrows(BM.arrows["up"],BM.BUTTON_STATUS.ACTIVE);
     }
 
 };
@@ -176,11 +184,15 @@ This function doesn't have to do anything. Any value returned is ignored.
 */
 
 PS.keyUp = function( key, shift, ctrl, options ) {
-	// Uncomment the following code line to inspect first three parameters:
 
-	// PS.debug( "PS.keyUp(): key=" + key + ", shift=" + shift + ", ctrl=" + ctrl + "\n" );
+    if (key === PS.KEY_ARROW_RIGHT && Player.unlocked.includes("right")) {
+        BM.drawArrows(BM.arrows["right"],BM.BUTTON_STATUS.INACTIVE);
+    } else if (key === PS.KEY_ARROW_LEFT && Player.unlocked.includes("left")) {
+        BM.drawArrows(BM.arrows["left"],BM.BUTTON_STATUS.INACTIVE);
+    } else if (key === PS.KEY_ARROW_UP && Player.unlocked.includes("up")) {
+        BM.drawArrows(BM.arrows["up"],BM.BUTTON_STATUS.INACTIVE);
+    }
 
-	// Add code here for when a key is released.
 };
 
 /*

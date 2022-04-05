@@ -1,19 +1,64 @@
 {
+	"level" : 2,
 	"player" : {
-		"position" : [ ]
+		"position" : {
+			"x" : 4,
+			"y" : 15
+		}
+	},
+	"dest" : {
+		"position" : {
+			"x" : 1,
+			"y" : 15
+		},
+		"data" : {
+			"type" : "dest",
+			"tags" : [
+				"next_level"
+			]
+		}
 	},
 	"platforms" : {
-		"ground" : [
-			{
-				"upper-left" : [ ],
-				"lower-right" : [ ]
+		"ground1" : {
+			"position" : {
+				"upper_left" : {
+					"x" : 1,
+					"y" : 16
+				},
+				"lower_right" : {
+					"x" : 19,
+					"y" : 16
+				}
+			},
+			"data" : {
+				"type" : "ground",
+				"tags" : [
+					"ground"
+				],
+				"color" : "0x000000"
 			}
-		]
+		}
 	},
-	"unlocked_buttons" : {
-	
+	"buttons" : {
+		"unlocked" : {
+			"arrows" : [
+				"right"
+			]
+		}
 	},
 	"pickups" : {
-    
-    }
+		"left_arrow" : {
+			"position" : {
+				"x" : 16,
+				"y" : 15
+			},
+			"data" : {
+				"type" : "arrow_left",
+				"tags" : [
+					"arrow_pickup",
+					"left"
+				]
+			}
+		}
+	}
 }

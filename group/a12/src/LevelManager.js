@@ -20,11 +20,18 @@ const LM = {
 
     DEST_COLOR: 0x8BC34A ,
 
+    PICKUP: {
+        BORDER_WIDTH: 5,
+        RADIUS:20,
+    },
+
+    NUM_OF_LEVELS : 5,
+
     //endregion
 
     //region Variables
     player: null ,
-    current_level : 1,
+    current_level: 1 ,
 
     //endregion
 
@@ -38,7 +45,7 @@ const LM = {
     init: function () {
 
         // Read the levels from file to memory
-        preloadLevels( 5 );
+        preloadLevels( LM.NUM_OF_LEVELS );
     } ,
 
     /**
@@ -57,6 +64,7 @@ const LM = {
         LM.current_level = level;
 
         // Draw the level
+        resetCanvas();
         renderLevel( level_str );
 
     } ,
@@ -66,9 +74,17 @@ const LM = {
      */
     resetLevel: function () {
         resetCanvas();
-        renderLevel(LM.current_level);
-    }
+        renderLevel( LM.current_level );
+    },
 
+    /**
+     * Checks a point to see if it is in the level
+     * @param x
+     * @param y
+     */
+    isLevelArea : function (x , y) {
+        return !( ( x < LM.GENERAL_AREA.LEFT || x >LM.GENERAL_AREA.RIGHT) || ( y < LM.GENERAL_AREA.TOP || y > LM.GENERAL_AREA.BOTTOM) ); // Needs a ! at the beginning because this checks outside of area
+    }
 
     //endregion
 
@@ -104,7 +120,7 @@ function renderLevel(level) {
     Player.x = level_data.player.position.x;
     Player.y = level_data.player.position.y;
 
-    Player.drawPlayer();
+    Player.move( Player.x , Player.y );
 
     // Render the destination
     const destX = level_data.dest.position.x;
@@ -115,10 +131,14 @@ function renderLevel(level) {
 
     // Render the platforms and grounds
     const platforms = level_data.platforms
-    drawPlatforms(platforms);
+    drawPlatforms( platforms );
 
-    // Draw a reset button at top
-    BM.drawResetButton();
+    // Draw the other button related stuff
+    BM.renderButtons( level_data.buttons );
+
+    // Draw the pick ups
+    const pickups = level_data.pickups;
+    drawPickups( pickups );
 }
 
 // Function to draw destination
@@ -128,9 +148,9 @@ function drawDestination(x , y , data) {
 }
 
 // Function to draw platforms in a level
-function drawPlatforms(platforms){
+function drawPlatforms(platforms) {
 
-    for (let [platform_name , platform_data] of Object.entries(platforms)){
+    for ( let [ platform_name , platform_data ] of Object.entries( platforms ) ) {
 
         const col_start = platform_data.position.upper_left.x;
         const row_start = platform_data.position.upper_left.y;
@@ -139,10 +159,10 @@ function drawPlatforms(platforms){
 
         const data = platform_data.data;
 
-        for (let col = col_start ; col <= col_end ; col ++) {
-            for (let row = row_start ; row <= row_end ; row ++) {
+        for ( let col = col_start ; col <= col_end ; col ++ ) {
+            for ( let row = row_start ; row <= row_end ; row ++ ) {
 
-                drawOnePlatformBead( col , row , data);
+                drawOnePlatformBead( col , row , data );
 
             }
         }
@@ -152,9 +172,66 @@ function drawPlatforms(platforms){
 }
 
 // Function to draw one platform bead
-function drawOnePlatformBead( x , y , data){
-    PS.color( x , y , Number(data.color));
+function drawOnePlatformBead(x , y , data) {
+    PS.color( x , y , Number( data.color ) );
     PS.data( x , y , data );
+}
+
+// Function to draw pickups
+function drawPickups(pickups) {
+
+    if ( Object.keys( pickups ).length > 0 ) {
+
+        // Values are the position + data dict
+        Object.values( pickups ).forEach( pickup => {
+
+            const x = pickup.position.x;
+            const y = pickup.position.y;
+            const data = pickup.data;
+
+            drawOnePickup( x , y , data );
+
+        } )
+
+    }
+
+}
+
+// Function to draw one pickup
+function drawOnePickup(x , y , data) {
+
+    PS.border(x,y,LM.PICKUP.BORDER_WIDTH);
+    PS.radius(x,y,LM.PICKUP.RADIUS);
+    PS.bgColor ( x, y, CONFIG.BEAD_BACKGROUND_COLOR);
+    PS.bgAlpha( x, y, PS.ALPHA_OPAQUE );
+
+    if (data.tags.includes("arrow_pickup")) {
+        drawArrowPickup(x,y,data.type, data);
+    }
+
+}
+
+// Function to draw an arrow pickup
+function drawArrowPickup(x,y,arrow,data){
+
+    let glyph_unicode = "O";
+    switch ( arrow ) {
+        case "arrow_up" :
+            glyph_unicode = 0x1F815;
+            break;
+        case "arrow_left" :
+            glyph_unicode = 0x1F814;
+            break;
+        case "arrow_right" :
+            glyph_unicode = 0x1F812;
+            break;
+        default:
+            break;
+    }
+
+    PS.glyph(x,y,glyph_unicode);
+    PS.data(x,y,data);
+
 }
 
 // Erase the whole canvas
@@ -168,6 +245,8 @@ function resetCanvas() {
 
         }
     }
+
+    Player.reset();
 
 }
 

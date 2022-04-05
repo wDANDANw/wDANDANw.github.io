@@ -6,6 +6,7 @@ import CONFIG from "./config.js";
 import DM from "./DialogueManager.js";
 import BM from "./ButtonManager.js";
 import LM from "./LevelManager.js";
+import Player from "./Player.js";
 
 const GM = {
 
@@ -31,8 +32,8 @@ const GM = {
         // Initialize the grid
         initGrid();
 
-        // Initialize the boarders
-        initBoarders();
+        // Initialize the borders
+        initBorders();
 
         // Load Sounds
         loadSounds();
@@ -60,7 +61,7 @@ const GM = {
      * Player's update is dependent on this
      */
     update : function () {
-
+        Player.update();
     },
 
     /**
@@ -96,8 +97,8 @@ function initGrid() {
 
 }
 
-// Initialize Boarders
-function initBoarders() {
+// Initialize Borders
+function initBorders() {
 
     // Top
     const top = PS.spriteSolid( 21 , 1 );
@@ -123,7 +124,7 @@ function loadSounds() {
 
 // Load the tutorial level to start
 function start() {
-    LM.loadLevel(1);
+    LM.loadLevel(3);
 }
 
 //endregion

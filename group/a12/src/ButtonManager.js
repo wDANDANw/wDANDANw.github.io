@@ -4,6 +4,7 @@
 
 import CONFIG from "./config.js";
 import LevelManager from "./LevelManager.js";
+import Player from "./Player.js";
 
 const BM = {
 
@@ -132,6 +133,29 @@ const BM = {
         PS.glyphColor(BM.RESET_BUTTON.position.x , BM.RESET_BUTTON.position.y,BM.RESET_BUTTON.color);
         PS.exec( BM.RESET_BUTTON.position.x , BM.RESET_BUTTON.position.y , BM.RESET_BUTTON.exec );
     } ,
+
+    /**
+     * Function to render buttons
+     * @param button_data
+     */
+    renderButtons : function (button_data) {
+
+        // Draw the reset button
+        BM.drawResetButton();
+
+        // Draw the unlocked buttons
+        const unlocked_button_data = button_data["unlocked"];
+
+        if ( unlocked_button_data["arrows"] ) {
+            unlocked_button_data["arrows"].forEach( (arrow) => {
+                BM.drawArrows(BM.arrows[arrow],BM.BUTTON_STATUS.INACTIVE);
+                Player.unlocked.push(arrow);
+            })
+        }
+
+
+        // for (let [ , platform_data] of Object.entries(platforms))
+    }
 
     //endregion
 
