@@ -140,6 +140,9 @@ const BM = {
      */
     renderButtons : function (button_data) {
 
+        // Can be used as reset
+        BM.init();
+
         // Draw the reset button
         BM.drawResetButton();
 
@@ -155,7 +158,7 @@ const BM = {
 
 
         // for (let [ , platform_data] of Object.entries(platforms))
-    }
+    },
 
     //endregion
 
