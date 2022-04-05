@@ -144,7 +144,7 @@
 	"pickups" : {
 		"up_arrow" : {
 			"position" : {
-				"x" : 5,
+				"x" : 6,
 				"y" : 15
 			},
 			"data" : {
