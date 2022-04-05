@@ -49,6 +49,7 @@ Any value returned is ignored.
 */
 
 import GM from "./src/GameManager.js";
+import Player from "./src/Player.js";
 
 PS.init = function( system, options ) {
 
@@ -156,11 +157,12 @@ This function doesn't have to do anything. Any value returned is ignored.
 */
 
 PS.keyDown = function( key, shift, ctrl, options ) {
-	// Uncomment the following code line to inspect first three parameters:
 
-	// PS.debug( "PS.keyDown(): key=" + key + ", shift=" + shift + ", ctrl=" + ctrl + "\n" );
+    //TODO: Change to feed into the game loop and then update
+    if (key === PS.KEY_ARROW_RIGHT) {
+        Player.move(Player.x + 1, Player.y);
+    }
 
-	// Add code here for when a key is pressed.
 };
 
 /*

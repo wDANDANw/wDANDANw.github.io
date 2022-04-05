@@ -1,0 +1,19 @@
+{
+	"player" : {
+		"position" : [ ]
+	},
+	"platforms" : {
+		"ground" : [
+			{
+				"upper-left" : [ ],
+				"lower-right" : [ ]
+			}
+		]
+	},
+	"unlocked_buttons" : {
+	
+	},
+	"pickups" : {
+    
+    }
+}

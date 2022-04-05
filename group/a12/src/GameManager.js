@@ -4,6 +4,8 @@
 
 import CONFIG from "./config.js";
 import DM from "./DialogueManager.js";
+import BM from "./ButtonManager.js";
+import LM from "./LevelManager.js";
 
 const GM = {
 
@@ -13,7 +15,7 @@ const GM = {
     //endregion
 
     //region Variables
-
+    MAIN_LOOP_ID : null,                // Global Main Loop ID
 
     //endregion
 
@@ -31,7 +33,52 @@ const GM = {
 
         // Initialize the boarders
         initBoarders();
+
+        // Load Sounds
+        loadSounds();
+
+        // Initialize Button Panel Area
+        BM.init();
+
+        // Initialize the Level Manger (load levels to memory)
+        LM.init();
+
+        // Start the game loop
+        GM.restartGameLoop();
+
+        // Load level 1 to start
+        start();
     } ,
+
+    /**
+     * Function to load sounds
+     */
+
+
+    /**
+     * The main update loop
+     * Player's update is dependent on this
+     */
+    update : function () {
+
+    },
+
+    /**
+     * Global function to stop the update loop
+     */
+    stopGameLoop : function () {
+        if (!GM.MAIN_LOOP_ID) return;
+
+        PS.timerStop(GM.MAIN_LOOP_ID);
+        GM.MAIN_LOOP_ID = null;
+    },
+
+    /**
+     * Global function to start update loop
+     */
+    restartGameLoop : function () {
+        GM.MAIN_LOOP_ID = PS.timerStart( CONFIG.FRAME_RATE, GM.update );
+    }
 
     //endregion
 }
@@ -60,13 +107,23 @@ function initBoarders() {
     // Left
     const left = PS.spriteSolid( 1 , 16 );
     PS.spriteSolidColor( left , CONFIG.BOARDER_COLOR );
-    PS.spriteMove( left , 0 , 0 );
+    PS.spriteMove( left , 0 , 1 );
 
     // Right
     const right = PS.spriteSolid( 1 , 16 );
     PS.spriteSolidColor( right , CONFIG.BOARDER_COLOR );
-    PS.spriteMove( right , 0 , 20 );
+    PS.spriteMove( right , 20 , 1 );
 
+}
+
+// Load sounds
+function loadSounds() {
+
+}
+
+// Load the tutorial level to start
+function start() {
+    LM.loadLevel(1);
 }
 
 //endregion
