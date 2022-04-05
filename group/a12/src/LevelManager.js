@@ -247,6 +247,13 @@ function resetCanvas() {
             PS.color( col , row , CONFIG.BEAD_BACKGROUND_COLOR );
             PS.data( col , row , PS.DEFAULT );
 
+            PS.glyph( col , row , 0 );
+            PS.border( col , row , 0 );
+            PS.radius( col , row , PS.DEFAULT );
+            PS.bgColor( col , row , CONFIG.BEAD_BACKGROUND_COLOR );
+            PS.bgAlpha( col , row , PS.ALPHA_OPAQUE );
+
+
         }
     }
 
