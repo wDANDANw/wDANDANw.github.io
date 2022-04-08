@@ -4,18 +4,6 @@
 
 // TODO: Credit
 
-const AUDIO_FILENAME_LIST = {
-    "BGM" : "BGM",
-    "Jump1" : "Jump1",
-    "Jump2" : "Jump2",
-    "Jump3" : "Jump3",
-    "Land" : "Land",
-    "Pass_Level" : "Pass_Level",
-    "Powerup1" : "PU1",
-    "Powerup2" : "PU2",
-    "Powerup3" : "PU3",
-};
-
 const SM = {
 
     //region Constants
@@ -57,7 +45,7 @@ const SM = {
     } ,
 
     play : function (audio_name) {
-        PS.audioPlay(audio_name);
+        PS.audioPlay(audio_name + ".wav");
     }
 
     //endregion

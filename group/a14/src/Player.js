@@ -110,8 +110,10 @@ const Player = {
                 Player.can_jump = false;
                 Player.move( Player.x , Player.y + 1 );
             } else {
-                SM.play(SM.FX.LAND);
-                Player.can_jump = true;
+                if (!Player.can_jump){
+                    SM.play(SM.FX.LAND);
+                    Player.can_jump = true;
+                }
             }
         }
 
