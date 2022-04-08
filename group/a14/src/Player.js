@@ -5,7 +5,7 @@
 import CONFIG from "./config.js";
 import LM from "./LevelManager.js";
 import BM from "./ButtonManager.js";
-import SM from "./SoundManager";
+import SM from "./SoundManager.js";
 
 const Player = {
 

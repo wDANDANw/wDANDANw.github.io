@@ -1,5 +1,8 @@
 {
 	"level" : 4,
+	"level_dialogue": {
+		"d1" : "Nothing can be done if I am too greedy"
+	},
 	"player" : {
 		"position" : {
 			"x" : 4,

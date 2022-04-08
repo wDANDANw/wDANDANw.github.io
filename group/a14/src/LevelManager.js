@@ -139,6 +139,9 @@ function renderLevel(level) {
     // Draw the pick ups
     const pickups = level_data.pickups;
     drawPickups( pickups );
+
+    // Change the status line
+    PS.statusText(level_data.level_dialogue.d1);
 }
 
 // Function to draw destination

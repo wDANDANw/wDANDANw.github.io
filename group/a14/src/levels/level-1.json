@@ -1,5 +1,8 @@
 {
 	"level" : 1,
+	"level_dialogue": {
+		"d1" : "I have to move forward."
+	},
 	"player" : {
 		"position" : {
 			"x" : 4,

@@ -1,5 +1,8 @@
 {
 	"level" : 3,
+	"level_dialogue": {
+		"d1" : "*&^@&# can only manacle your wings but not the freedom of your soul"
+	},
 	"player" : {
 		"position" : {
 			"x" : 4,

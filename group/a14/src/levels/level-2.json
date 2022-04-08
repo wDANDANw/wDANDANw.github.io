@@ -1,5 +1,8 @@
 {
 	"level" : 2,
+	"level_dialogue": {
+		"d1" : "It's been four years"
+	},
 	"player" : {
 		"position" : {
 			"x" : 4,
