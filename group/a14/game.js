@@ -52,6 +52,7 @@ import GM from "./src/GameManager.js";
 import Player from "./src/Player.js";
 import BM from "./src/ButtonManager.js";
 import LM from "./src/LevelManager.js";
+import SM from "./src/SoundManager.js";
 
 PS.init = function( system, options ) {
 
