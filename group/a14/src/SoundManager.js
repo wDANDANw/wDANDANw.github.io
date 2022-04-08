@@ -5,15 +5,15 @@
 // TODO: Credit
 
 const AUDIO_FILENAME_LIST = {
-    "BGM.wav" : "BGM",
-    "Jump1.wav" : "Jump1",
-    "Jump2.wav" : "Jump2",
-    "Jump3.wav" : "Jump3",
-    "Land.wav" : "Land",
-    "Pass_Level.wav" : "Pass_Level",
-    "Powerup1.wav" : "PU1",
-    "Powerup2.wav" : "PU2",
-    "Powerup3.wav" : "PU3",
+    "BGM" : "BGM",
+    "Jump1" : "Jump1",
+    "Jump2" : "Jump2",
+    "Jump3" : "Jump3",
+    "Land" : "Land",
+    "Pass_Level" : "Pass_Level",
+    "Powerup1" : "PU1",
+    "Powerup2" : "PU2",
+    "Powerup3" : "PU3",
 };
 
 const SM = {
@@ -22,14 +22,14 @@ const SM = {
     AUDIO_PATH : "assets/sound/",
 
     FX : {
-        JUMP_1 : "Jump1.wav",
-        JUMP_2 : "Jump2.wav",
-        JUMP_3 : "Jump3.wav",
-        LAND : "Land.wav",
-        PASS_LEVEL : "Pass_Level.wav",
-        POWER_UP_1 : "Powerup1.wav",
-        POWER_UP_2 : "Powerup2.wav",
-        POWER_UP_3 : "Powerup3.wav",
+        JUMP_1 : "Jump1",
+        JUMP_2 : "Jump2",
+        JUMP_3 : "Jump3",
+        LAND : "Land",
+        PASS_LEVEL : "Pass_Level",
+        POWER_UP_1 : "Powerup1",
+        POWER_UP_2 : "Powerup2",
+        POWER_UP_3 : "Powerup3",
     },
 
     BGM : {
