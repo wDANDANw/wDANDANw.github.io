@@ -45,7 +45,7 @@ const SM = {
     } ,
 
     play : function (audio_name) {
-        PS.audioPlay(audio_name + ".wav");
+        PS.audioPlay(audio_name);
     }
 
     //endregion
