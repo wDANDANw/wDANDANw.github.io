@@ -51,6 +51,7 @@ Any value returned is ignored.
 import GM from "./src/GameManager.js";
 import Player from "./src/Player.js";
 import BM from "./src/ButtonManager.js";
+import LM from "./src/LevelManager.js";
 
 PS.init = function( system, options ) {
 
