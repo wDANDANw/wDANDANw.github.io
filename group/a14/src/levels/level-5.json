@@ -1,0 +1,172 @@
+{
+	"level" : 5,
+	"player" : {
+		"position" : {
+			"x" : 3,
+			"y" : 2
+		}
+	},
+	"dest" : {
+		"position" : {
+			"x" : 1,
+			"y" : 15
+		},
+		"data" : {
+			"type" : "dest",
+			"tags" : [
+				"end_game"
+			]
+		}
+	},
+	"platforms" : {
+		"ground1" : {
+			"position" : {
+				"upper_left" : {
+					"x" : 1,
+					"y" : 16
+				},
+				"lower_right" : {
+					"x" : 19,
+					"y" : 16
+				}
+			},
+			"data" : {
+				"type" : "ground",
+				"tags" : [
+					"ground"
+				],
+				"color" : "0x000000"
+			}
+		},
+		"ground2" : {
+			"position" : {
+				"upper_left" : {
+					"x" : 3,
+					"y" : 10
+				},
+				"lower_right" : {
+					"x" : 4,
+					"y" : 15
+				}
+			},
+			"data" : {
+				"type" : "ground",
+				"tags" : [
+					"ground"
+				],
+				"color" : "0x000000"
+			}
+		},
+		"ground3" : {
+			"position" : {
+				"upper_left" : {
+					"x" : 1,
+					"y" : 3
+				},
+				"lower_right" : {
+					"x" : 4,
+					"y" : 3
+				}
+			},
+			"data" : {
+				"type" : "ground",
+				"tags" : [
+					"ground"
+				],
+				"color" : "0x000000"
+			}
+		},
+		"ground4" : {
+			"position" : {
+				"upper_left" : {
+					"x" : 5,
+					"y" : 7
+				},
+				"lower_right" : {
+					"x" : 9,
+					"y" : 7
+				}
+			},
+			"data" : {
+				"type" : "ground",
+				"tags" : [
+					"ground"
+				],
+				"color" : "0x000000"
+			}
+		},
+		"ground5" : {
+			"position" : {
+				"upper_left" : {
+					"x" : 10,
+					"y" : 10
+				},
+				"lower_right" : {
+					"x" : 13,
+					"y" : 10
+				}
+			},
+			"data" : {
+				"type" : "ground",
+				"tags" : [
+					"ground"
+				],
+				"color" : "0x000000"
+			}
+		},
+		"ground6" : {
+			"position" : {
+				"upper_left" : {
+					"x" : 14,
+					"y" : 13
+				},
+				"lower_right" : {
+					"x" : 17,
+					"y" : 13
+				}
+			},
+			"data" : {
+				"type" : "ground",
+				"tags" : [
+					"ground"
+				],
+				"color" : "0x000000"
+			}
+		}
+	},
+	"buttons" : {
+		"unlocked" : {
+			"arrows" : [
+				"right"
+			]
+		}
+	},
+	"pickups" : {
+		"up_arrow" : {
+			"position" : {
+				"x" : 6,
+				"y" : 15
+			},
+			"data" : {
+				"type" : "arrow_up",
+				"tags" : [
+					"arrow_pickup",
+					"up"
+				]
+			}
+		},
+		"left_arrow" : {
+			"position" : {
+				"x" : 19,
+				"y" : 15
+			},
+			"data" : {
+				"type" : "arrow_left",
+				"tags" : [
+					"arrow_pickup",
+					"left"
+				]
+			}
+		}
+	}
+}

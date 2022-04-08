@@ -6,7 +6,7 @@
  */
 const CONFIG = {
     // Game Loop Related Constants
-    FRAME_RATE: 6,	// animation frame rate; 6/60ths = 10 fps
+    FRAME_RATE: 3,	// animation frame rate; 6/60ths = 10 fps
 
     // Grid Size Related Constants
     WIDTH: 21,

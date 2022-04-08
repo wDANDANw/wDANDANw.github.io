@@ -28,6 +28,9 @@ const Player = {
     jump_updates: [] ,
     HARDCODED_JUMP_UPDATE_SERIES: [ - 1 , - 1 , - 1 , - 1 , -1] ,
 
+    moving_right : false,
+    moving_left : false,
+
     //endregion
 
 
@@ -109,6 +112,18 @@ const Player = {
                 Player.can_jump = true;
             }
         }
+
+        if (Player.moving_left) {
+            Player.move(Player.x - 1, Player.y);
+            BM.drawArrows(BM.arrows["left"],BM.BUTTON_STATUS.ACTIVE);
+        }
+
+        if (Player.moving_right) {
+            Player.move(Player.x + 1, Player.y);
+            BM.drawArrows(BM.arrows["right"],BM.BUTTON_STATUS.ACTIVE);
+        }
+
+
     } ,
 
     reset: function () {
@@ -122,6 +137,8 @@ const Player = {
         Player.can_jump = true;
         Player.x = 1;
         Player.y = 1;
+        Player.moving_left = false;
+        Player.moving_right = false;
     }
 
     //endregion
