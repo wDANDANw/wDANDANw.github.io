@@ -33,7 +33,7 @@ const SM = {
     },
 
     BGM : {
-       BGM : "BGM.wav",
+       BGM : "BGM",
     },
 
     //endregion
@@ -70,16 +70,16 @@ function loadSounds(){
     //     console.log(`${key}: ${value}`);
     // }
 
-    Object.entries(SM.FX).forEach(([sm_name, file_path]) => {
+    Object.entries(SM.FX).forEach(([sm_name, filename]) => {
 
-        PS.audioLoad(file_path, { lock:true, fileTypes : ["wav"], path: SM.AUDIO_PATH, onload : (data) => {
+        PS.audioLoad(filename, { lock:true, fileTypes : ["wav"], path: SM.AUDIO_PATH, onload : (data) => {
 
             }});
     });
 
-    Object.entries(SM.BGM).forEach(([sm_name, file_path]) => {
+    Object.entries(SM.BGM).forEach(([sm_name, filename]) => {
 
-        PS.audioLoad(file_path, { lock:true, fileTypes : ["wav"], path: SM.AUDIO_PATH, onload : (data) => {
+        PS.audioLoad(filename, { lock:true, fileTypes : ["wav"], path: SM.AUDIO_PATH, onload : (data) => {
 
             }});
     });
