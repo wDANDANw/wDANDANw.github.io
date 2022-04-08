@@ -165,6 +165,11 @@ PS.keyDown = function( key, shift, ctrl, options ) {
     } else if (key === PS.KEY_ARROW_LEFT && Player.unlocked.includes("left")) {
         Player.moving_left = true;
     } else if (key === PS.KEY_ARROW_UP && Player.unlocked.includes("up")) {
+
+        if (LM.current_level === 3) {
+            PS.statusText("but not the freedom of your soul");
+        }
+
         Player.jump();
         const random_jump_name = "Jump" + PS.random(3) + ".wav";
         SM.play(random_jump_name);
