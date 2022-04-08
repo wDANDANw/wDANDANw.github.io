@@ -19,7 +19,7 @@ const AUDIO_FILENAME_LIST = {
 const SM = {
 
     //region Constants
-    AUDIO_PATH : "./assets/sound/",
+    AUDIO_PATH : "assets/sound/",
 
     FX : {
         JUMP_1 : "Jump1.wav",
@@ -56,6 +56,10 @@ const SM = {
         loadSounds()
     } ,
 
+    play : function (audio_name) {
+        PS.audioPlay(audio_name);
+    }
+
     //endregion
 
 }
@@ -73,11 +77,9 @@ function loadSounds(){
     });
 
     Object.entries(SM.FX).forEach(([sm_name, file_path]) => {
-        const file_ext = file_path.split('.').pop();
-        const filename = file_path.substr(0,file_path.lastIndexOf('.'));
 
-        PS.audioLoad(filename, { lock:true, fileTypes : [file_ext], path: SM.AUDIO_PATH, onload : (data) => {
-                console.log(file_path);
+        PS.audioLoad(file_path, { lock:true, fileTypes : ["wav"], path: SM.AUDIO_PATH, onload : (data) => {
+
             }});
     });
 
