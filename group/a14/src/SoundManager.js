@@ -19,17 +19,17 @@ const AUDIO_FILENAME_LIST = {
 const SM = {
 
     //region Constants
-    AUDIO_PATH : "../assets/sound/",
+    AUDIO_PATH : "./assets/sound/",
 
     FX : {
         JUMP_1 : "Jump1.wav",
         JUMP_2 : "Jump2.wav",
-        // JUMP_3 : "Jump3",
-        // LAND : "Land",
-        // PASS_LEVEL : "Pass_Level",
-        // POWER_UP_1 : "PU1",
-        // POWER_UP_2 : "PU2",
-        // POWER_UP_3 : "PU3",
+        JUMP_3 : "Jump3.wav",
+        LAND : "Land.wav",
+        PASS_LEVEL : "Pass_Level.wav",
+        POWER_UP_1 : "Powerup1.wav",
+        POWER_UP_2 : "Powerup2.wav",
+        POWER_UP_3 : "Powerup3.wav",
     },
 
     BGM : {
