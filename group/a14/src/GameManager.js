@@ -48,6 +48,9 @@ const GM = {
         // Start the game loop
         GM.restartGameLoop();
 
+        // Player BGM
+        SM.play(SM.BGM.BGM);
+
         // Load level 1 to start
         start();
     } ,

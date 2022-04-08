@@ -5,6 +5,7 @@
 import CONFIG from "./config.js";
 import LM from "./LevelManager.js";
 import BM from "./ButtonManager.js";
+import SM from "./SoundManager";
 
 const Player = {
 
@@ -188,6 +189,7 @@ function processCollide(x , y) {
         if ( tags.length > 0 ) {
 
             if ( tags.includes( "next_level" ) ) {
+                SM.play(SM.FX.PASS_LEVEL);
                 LM.loadLevel( LM.current_level + 1 );
                 should_move = false;
             } else if ( tags.includes( "end_game" ) ) {
@@ -222,12 +224,15 @@ function getArrowPickup(x , y , data) {
     switch ( data.type ) {
         case "arrow_up" :
             ability_to_add = "up";
+            SM.play(SM.FX.POWER_UP_1);
             break;
         case "arrow_left" :
             ability_to_add = "left";
+            SM.play(SM.FX.POWER_UP_2);
             break;
         case "arrow_right" :
             ability_to_add = "right";
+            SM.play(SM.FX.POWER_UP_3);
             break;
         default:
             break;
