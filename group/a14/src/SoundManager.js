@@ -45,7 +45,7 @@ const SM = {
     } ,
 
     play : function (audio_name) {
-        // PS.audioPlay(audio_name);
+        PS.audioPlay(audio_name, {fileTypes : ["wav"], path: SM.AUDIO_PATH});
     }
 
     //endregion
