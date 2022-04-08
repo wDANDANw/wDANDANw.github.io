@@ -7,6 +7,7 @@ import DM from "./DialogueManager.js";
 import BM from "./ButtonManager.js";
 import LM from "./LevelManager.js";
 import Player from "./Player.js";
+import SM from "./SoundManager.js";
 
 const GM = {
 
@@ -35,8 +36,8 @@ const GM = {
         // Initialize the borders
         initBorders();
 
-        // Load Sounds
-        loadSounds();
+        // Initialize Sound Manager
+        SM.init();
 
         // Initialize Button Panel Area
         BM.init();
@@ -114,11 +115,6 @@ function initBorders() {
     const right = PS.spriteSolid( 1 , 16 );
     PS.spriteSolidColor( right , CONFIG.BOARDER_COLOR );
     PS.spriteMove( right , 20 , 1 );
-
-}
-
-// Load sounds
-function loadSounds() {
 
 }
 
