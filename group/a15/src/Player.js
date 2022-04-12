@@ -239,7 +239,7 @@ function processCollide(x , y, move_offset) {
                     should_move = false;
                 }
             } else if ( tags.includes( "end_game" ) ) {
-                PS.statusText( "That's the prototype. Thanks for playing!" );
+                PS.statusText( "Thanks for playing!" );
             } else if ( tags.includes( "arrow_pickup" ) || tags.includes("color_pickup") ) {
                 getPickup( x , y , data );
             } else if ( tags.includes( "ground" ) ) {
@@ -270,7 +270,6 @@ function getPickup(x , y , data) {
 
     if (data.type !== "yellow_pickup" && !canGrowUp(x,y)) {
         console.log("Cannot grow up here")
-        return;
     }
 
     PS.glyph( x , y , 0 );

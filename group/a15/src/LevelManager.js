@@ -137,6 +137,8 @@ function renderLevel(level) {
 
     const level_data = levels[level];
 
+    LM.blue_walls = [];
+
     // Render the destination
     const destX = level_data.dest.position.x;
     const destY = level_data.dest.position.y;
