@@ -173,6 +173,9 @@ PS.keyDown = function( key, shift, ctrl, options ) {
         }
 
         Player.jump();
+        const random_jump_name = "Jump" + PS.random(3);
+        SM.play(random_jump_name);
+        BM.drawArrows(BM.arrows["up"],BM.BUTTON_STATUS.ACTIVE);
     }
 
 };
