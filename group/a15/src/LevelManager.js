@@ -19,7 +19,7 @@ const LM = {
         RIGHT: 19 ,
     } ,
 
-    DEST_COLOR: 0x8BC34A ,
+    DEST_COLOR: 0x87D646 ,
     BLUE_COLOR: 0x03A9F4 ,
     YELLOW_COLOR: 0xFFC107 ,
     PURPLE_COLOR: 0x9C27B0 ,

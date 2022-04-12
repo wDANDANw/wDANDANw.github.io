@@ -11,7 +11,7 @@ import DM from "./DialogueManager.js";
 const Player = {
 
     //region Constants
-    COLOR: 0xE91E63 ,
+    COLOR: 0xB13E53 ,
 
     //endregion
 

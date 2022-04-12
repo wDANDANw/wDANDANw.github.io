@@ -305,11 +305,20 @@ function initColorBarContentArray(){
         BM.color_bar_content.blue.push(BM.BUTTON_COLORS.COLOR_BAR.BLUE[i % (BM.BUTTON_COLORS.COLOR_BAR.BLUE.length - 1)]);
     }
 
+    for (let i = 0; i < BM.color_bar_content_length ; i ++){
+        BM.color_bar_content.yellow.push(BM.BUTTON_COLORS.COLOR_BAR.YELLOW[i % (BM.BUTTON_COLORS.COLOR_BAR.YELLOW.length - 1)]);
+    }
+
+    for (let i = 0; i < BM.color_bar_content_length ; i ++){
+        BM.color_bar_content.purple.push(BM.BUTTON_COLORS.COLOR_BAR.PURPLE[i % (BM.BUTTON_COLORS.COLOR_BAR.PURPLE.length - 1)]);
+    }
+
 }
 
 function drawColorBarContent(){
 
     const current_color_array = BM.color_bar_content[BM.color_bar_current_color];
+
     const current_color_array_length = current_color_array.length;
 
     for (let col = 0; col < BM.color_bar_content_length ; col ++){
