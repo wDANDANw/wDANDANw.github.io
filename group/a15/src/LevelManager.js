@@ -21,8 +21,8 @@ const LM = {
 
     DEST_COLOR: 0x8BC34A ,
     BLUE_COLOR: 0x03A9F4 ,
-    YELLOW_COLOR: 0x03A9F4 ,
-    PURPLE_COLOR: 0x03A9F4 ,
+    YELLOW_COLOR: 0xFFC107 ,
+    PURPLE_COLOR: 0x9C27B0 ,
 
     PICKUP: {
         BORDER_WIDTH: 5 ,
@@ -192,14 +192,23 @@ function drawPlatforms(platforms) {
         const col_end = platform_data.position.lower_right.x;
         const row_end = platform_data.position.lower_right.y;
 
-        const data = platform_data.data;
-
+        let data = platform_data.data;
 
         for ( let col = col_start ; col <= col_end ; col ++ ) {
             for ( let row = row_start ; row <= row_end ; row ++ ) {
 
                 if ( data.type === "blue" ) {
                     LM.blue_walls.push( [ col , row , data ] );
+                }
+
+                if (data.type === "purple") {
+                    const x_offset = platform_data.position.another_upper_left.x - platform_data.position.upper_left.x;
+                    const y_offset = platform_data.position.another_upper_left.y - platform_data.position.upper_left.y;
+
+                    const new_data = JSON.parse( JSON.stringify( data ) )
+                    new_data.tp_location.x = col + x_offset;
+                    new_data.tp_location.y = row + y_offset;
+                    data = new_data;
                 }
 
                 drawOnePlatformBead( col , row , data );
@@ -222,7 +231,7 @@ function getPSColor(param_color) {
             case "yellow":
                 color = LM.YELLOW_COLOR;
                 break;
-            case "red":
+            case "purple":
                 color = LM.PURPLE_COLOR;
                 break;
             default:

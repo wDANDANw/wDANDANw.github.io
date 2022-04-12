@@ -49,8 +49,8 @@ const BM = {
         COLOR_BAR: {
 
             BLUE: [ 0x4fc8ff, 0x3ebeff, 0x29b3ff, 0x03a9f4, 0x009fe9, 0x0095d3, 0x008bd3 ],
-            YELLOW: [],
-            PURPLE: [],
+            YELLOW: [0xffd454, 0xffce3a, 0xffc721, 0xffc107, 0xedb100, 0xd39e00, 0xba8b00 ],
+            PURPLE: [ 0xb03dc4, 0xaa36bd, 0xa32fb7, 0x9c27b0, 0x951ea9, 0x8f15a3, 0x88079d ],
             DEFAULT: PS.COLOR_WHITE
 
         }
@@ -227,7 +227,8 @@ const BM = {
         }
 
         // Draw the color bar
-        BM.drawColorBar("default")
+        BM.color_bar_current_color = "";
+        BM.drawColorBar("default");
     },
 
     //endregion

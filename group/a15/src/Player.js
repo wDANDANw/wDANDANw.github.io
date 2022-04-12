@@ -38,9 +38,6 @@ const Player = {
     moving_limiter : 0,         // Animation Limiter. Number to be updated.
     moving_limiter_mod : 4,     // Animation Limiter. Number to be mod.
     moving_limiter_comp : 0,    // Animation Limiter. Number to be compared.
-
-    blue_mask : false,
-
     //endregion
 
 
@@ -87,11 +84,14 @@ const Player = {
                 local_x = body_coord[0] + x;
                 local_y = body_coord[1] + y;
 
-                if (!processCollide( local_x , local_y)) return;
+                const move_offset = [local_x - Player.x, local_y - Player.y];
+
+                if (!processCollide( local_x , local_y , move_offset)) return;
             }
 
             Player.x = x;
             Player.y = y;
+
 
             Player.drawPlayer();
         }
@@ -160,6 +160,7 @@ const Player = {
     reset: function () {
         PS.color( Player.x , Player.y , CONFIG.BEAD_BACKGROUND_COLOR );
         Player.unlocked_arrow = [];
+        Player.unlocked_color = "default";
         Player.jump_updates = [];
         Player.body_list = [ [ 0 , 0 ] ];
         Player.num_pickup_eaten = 0;
@@ -172,7 +173,6 @@ const Player = {
         Player.moving_right = false;
         Player.jump_limiter = 0;
         Player.moving_limiter = 0;
-        Player.blue_mask = false;
     }
 
     //endregion
@@ -206,7 +206,11 @@ function isMovableArea(x , y) {
         answer = false;
     }
 
-    if ( PS.data(x,y).type === "blue" && !Player.blue_mask) {
+    if ( PS.data(x,y).type === "blue" && Player.unlocked_color !== "blue") {
+        answer = false;
+    }
+
+    if ( PS.data(x,y).type === "purple" && Player.unlocked_color !== "purple") {
         answer = false;
     }
 
@@ -214,7 +218,7 @@ function isMovableArea(x , y) {
 }
 
 // Function to process potential collision
-function processCollide(x , y) {
+function processCollide(x , y, move_offset) {
 
     let should_move = true;
 
@@ -241,7 +245,10 @@ function processCollide(x , y) {
             } else if ( tags.includes( "ground" ) ) {
                 should_move = false;
             } else if (tags.includes("blue")) {
-                should_move = Player.blue_mask;
+                should_move = (Player.unlocked_color === "blue");
+            } else if (tags.includes("purple") && Player.unlocked_color === "purple") {
+                teleport(data, move_offset);
+                should_move = false;
             }
 
             // Update Dialogue
@@ -261,7 +268,7 @@ function getPickup(x , y , data) {
 
     if (data.eaten) return;
 
-    if (!canGrowUp(x,y)) {
+    if (data.type !== "yellow_pickup" && !canGrowUp(x,y)) {
         console.log("Cannot grow up here")
         return;
     }
@@ -271,9 +278,11 @@ function getPickup(x , y , data) {
     PS.radius( x , y , PS.DEFAULT );
     PS.bgColor( x , y , CONFIG.BEAD_BACKGROUND_COLOR );
     PS.bgAlpha( x , y , PS.ALPHA_OPAQUE );
+    PS.color( x , y , CONFIG.BEAD_BACKGROUND_COLOR);
 
     let ability_to_add = null;
     let picking_arrow = false;
+    let picking_yellow = false;
 
     // Play sound
     const random_jump_name = "Powerup" + PS.random(3);
@@ -296,10 +305,11 @@ function getPickup(x , y , data) {
             getBluePickup();
             break;
         case "yellow_pickup" :
-            Player.blue_mask = false;
+            getYellowPickup();
+            picking_yellow = true;
             break;
         case "purple_pickup" :
-            Player.blue_mask = false;
+            getPurplePickup();
             break;
         default:
             break;
@@ -314,7 +324,9 @@ function getPickup(x , y , data) {
     data["eaten"] = true;
     PS.data(x,y,data);
 
-    growUp();
+    if (!picking_yellow) {
+        growUp();
+    }
 
 }
 
@@ -324,15 +336,20 @@ function shouldFall(){
 
     for ( let i = 0; i < Player.size; i ++){
 
-        if (Player.blue_mask === true && Player.y === 16) {
+        if ( (Player.unlocked_color === "blue") && Player.y === 16) {
             LM.resetLevel();
         }
 
         if (PS.data( Player.x - i , Player.y + 1 ).tags){
             if (PS.data( Player.x - i, Player.y + 1 ).tags.includes( "ground")){
                 answer = false;
-            } else if (Player.blue_mask === false && PS.data( Player.x - i, Player.y + 1 ).tags.includes( "blue")){
+                break;
+            } else if (Player.unlocked_color !== "blue" && PS.data( Player.x - i, Player.y + 1 ).tags.includes( "blue")){
                 answer = false
+                break;
+            } else if (Player.unlocked_color !== "purple" && PS.data( Player.x - i, Player.y + 1 ).tags.includes( "purple")){
+                answer = false
+                break;
             }
         }
     }
@@ -406,9 +423,68 @@ function canGrowUp(x,y){
 // Get blue pickup handler
 function getBluePickup(){
     Player.unlocked_color = "blue";
-    Player.blue_mask = true;
     LM.setBlueWalls(false);
     BM.drawColorBar(Player.unlocked_color);
+}
+
+// Get yellow pickup handler
+function getYellowPickup() {
+    const x = Player.x;
+    const y = Player.y;
+
+    for ( let i = 0 ; i < Player.size ; i ++ ) {
+        for ( let j = 0 ; j < Player.size ; j ++ ) {
+            PS.color( x - i, y - j, CONFIG.BEAD_BACKGROUND_COLOR );
+        }
+    }
+
+    Player.unlocked_color = "yellow";
+    Player.body_list = [ [ 0 , 0 ] ];
+    Player.num_pickup_eaten = 0;
+    Player.size = 1;
+    BM.drawColorBar(Player.unlocked_color);
+    LM.setBlueWalls(true);
+}
+
+// Get purple pickup handler
+function getPurplePickup() {
+    Player.unlocked_color = "purple";
+    BM.drawColorBar(Player.unlocked_color);
+    LM.setBlueWalls(true);
+}
+
+// Teleport handler
+function teleport(data, move_offset) {
+
+    // Erase old player
+    const x = Player.x;
+    const y = Player.y;
+
+    for ( let i = 0 ; i < Player.size ; i ++ ) {
+        for ( let j = 0 ; j < Player.size ; j ++ ) {
+            PS.color( x - i, y - j, CONFIG.BEAD_BACKGROUND_COLOR );
+        }
+    }
+
+    // Calculate new position
+    if (move_offset[0] < 0) {
+        Player.x = data.tp_location.x - move_offset[0] - Player.size;
+    } else if (move_offset[0] > 0) {
+        Player.x = data.tp_location.x + Player.size;
+    } else {
+        Player.x = data.tp_location.x;
+    }
+
+    if (move_offset[1] < 0) {
+        Player.y = data.tp_location.y - move_offset[0] - Player.size - 1;
+    } else if (move_offset[1] > 0) {
+        Player.y = data.tp_location.y + Player.size;
+    } else {
+        Player.y = data.tp_location.y;
+    }
+
+    // Draw the player
+    Player.drawPlayer();
 }
 
 
