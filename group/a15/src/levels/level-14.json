@@ -571,20 +571,6 @@
 	},
 	"dialogues": {
 		"d1" : {
-			"position" : {
-				"x": 19,
-				"y": 15
-			},
-			"data" : {
-				"tags" : ["dialogue"],
-				"dialogue_data" : {
-					"visited": 0,
-					"dialogue_dict": {
-						"1" : "I will move forward.",
-						"4" : "I really need to go NOW."
-					}
-				}
-			}
 		}
 	}
 }
