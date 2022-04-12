@@ -1,8 +1,5 @@
 {
 	"level" : 1,
-	"level_dialogue": {
-		"d1" : "I have to move forward."
-	},
 	"player" : {
 		"position" : {
 			"x" : 4,
@@ -16,7 +13,8 @@
 		},
 		"data" : {
 			"type" : "dest",
-			"tags" : [ "next_level" ]
+			"tags" : [ "next_level" ],
+			"size": 1
 		}
 	},
 	"platforms" : {
@@ -46,5 +44,23 @@
 		}
 	},
 	"pickups" : {
+	},
+	
+	"dialogues": {
+		"d1" : {
+			"position" : {
+				"x": 4,
+				"y": 15
+			},
+			"data" : {
+				"tags" : ["dialogue"],
+				"dialogue_data" : {
+					"visited": 0,
+					"dialogue_dict": {
+						"1" : "I have to move forward."
+					}
+				}
+			}
+		}
 	}
 }

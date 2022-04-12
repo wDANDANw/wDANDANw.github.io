@@ -18,9 +18,9 @@ const BM = {
 
     COLOR_AREA: {
         TOP: 18 ,
-        Bottom: 19 ,
-        LEFT: 1 ,
-        RIGHT: 12 ,
+        BOTTOM: 19 ,
+        LEFT: 2 ,
+        RIGHT: 11 ,
     } ,
 
     ARROW_AREA: {
@@ -46,6 +46,15 @@ const BM = {
             ACTIVE: 0xEF9A9A ,
         } ,
 
+        COLOR_BAR: {
+
+            BLUE: [ 0x4fc8ff, 0x3ebeff, 0x29b3ff, 0x03a9f4, 0x009fe9, 0x0095d3, 0x008bd3 ],
+            YELLOW: [],
+            PURPLE: [],
+            DEFAULT: PS.COLOR_WHITE
+
+        }
+
     } ,
 
     RESET_BUTTON: {
@@ -60,8 +69,9 @@ const BM = {
     //endregion
 
     //region Variables
-    colors: [] ,                           // The array for colors
-    arrows: {                             // The dictionary for arrows
+
+    //The dictionary for arrows
+    arrows: {
         up: {
             coords: [ [ 16 , 17 ] , [ 17 , 17 ] , [ 16 , 18 ] , [ 17 , 18 ] ] ,
         } ,
@@ -72,6 +82,24 @@ const BM = {
             coords: [ [ 18 , 19 ] , [ 19 , 19 ] , [ 18 , 20 ] , [ 19 , 20 ] ] ,
         } ,
     } ,
+
+    color_bar_boarder : [],
+    color_bar_content : {
+
+        blue : [],
+        yellow : [],
+        purple : [],
+        default : []
+
+    },
+    color_bar_content_length : 0,
+    color_bar_current_color : "",
+    color_bar_current_content_index : 0,
+    color_bar_current_boarder_index : 0,
+
+    color_animation_limiter : 0,         // Animation Limiter. Number to be updated.
+    color_animation_limiter_mod : 2,     // Animation Limiter. Number to be mod.
+    color_animation_limiter_comp : 0,    // Animation Limiter. Number to be compared.
     //endregion
 
 
@@ -88,6 +116,9 @@ const BM = {
 
         // Initialize the Arrows
         initArrows();
+
+        // Init the color bar
+        initColorBar();
 
     } ,
 
@@ -134,6 +165,45 @@ const BM = {
         PS.exec( BM.RESET_BUTTON.position.x , BM.RESET_BUTTON.position.y , BM.RESET_BUTTON.exec );
     } ,
 
+    drawColorBar : function (color) {
+
+        // Draw the boarder
+        BM.color_bar_boarder.forEach( coord => {
+
+            PS.color(coord[0], coord[1], CONFIG.BOARDER_COLOR);
+
+        })
+
+        // Draw the content
+        if (color !== BM.color_bar_current_color){
+            BM.color_bar_current_color = color;
+            BM.color_bar_current_content_index = 0;
+            drawColorBarContent();
+            // drawColorBoarder();
+        }
+
+    },
+
+    update : function () {
+
+        if (BM.color_bar_current_color !== "default"){
+
+            if ( ((BM.color_animation_limiter += 1) % BM.color_animation_limiter_mod) > BM.color_animation_limiter_comp ){
+                BM.color_bar_current_content_index += 1;
+                drawColorBarContent();
+
+                // BM.color_bar_current_boarder_index += 1;
+                // drawColorBoarder();
+            }
+
+            if (BM.color_animation_limiter >= BM.color_animation_limiter_mod){
+                BM.color_animation_limiter = 0;
+            }
+
+        }
+
+    },
+
     /**
      * Function to render buttons
      * @param button_data
@@ -152,12 +222,12 @@ const BM = {
         if ( unlocked_button_data["arrows"] ) {
             unlocked_button_data["arrows"].forEach( (arrow) => {
                 BM.drawArrows(BM.arrows[arrow],BM.BUTTON_STATUS.INACTIVE);
-                Player.unlocked.push(arrow);
+                Player.unlocked_arrow.push(arrow);
             })
         }
 
-
-        // for (let [ , platform_data] of Object.entries(platforms))
+        // Draw the color bar
+        BM.drawColorBar("default")
     },
 
     //endregion
@@ -189,6 +259,88 @@ function initArrows() {
 
 }
 
+// Initialize Color Bar
+function initColorBar() {
+
+    // Init the boarder array
+    initColorBarBoarderArray();
+
+    // Fill the color content array with default color
+    BM.color_bar_content_length = BM.COLOR_AREA.RIGHT - BM.COLOR_AREA.LEFT + 1;
+    initColorBarContentArray();
+
+}
+
+function initColorBarBoarderArray(){
+    // Init the color bar boarder array
+    // Top
+    for ( let col = BM.COLOR_AREA.LEFT - 1; col < BM.COLOR_AREA.RIGHT + 1; col ++) {
+        BM.color_bar_boarder.push([col , BM.COLOR_AREA.TOP-1]);
+    }
+
+    // Right
+    for ( let row = BM.COLOR_AREA.TOP-1; row < BM.COLOR_AREA.BOTTOM + 1; row ++) {
+        BM.color_bar_boarder.push([BM.COLOR_AREA.RIGHT+1 , row]);
+    }
+
+    // Bottom
+    for ( let col = BM.COLOR_AREA.RIGHT + 1; col > BM.COLOR_AREA.LEFT - 1; col --) {
+        BM.color_bar_boarder.push([col , BM.COLOR_AREA.BOTTOM+1]);
+    }
+
+    // Left
+    for ( let row = BM.COLOR_AREA.BOTTOM+1; row > BM.COLOR_AREA.TOP - 1; row --) {
+        BM.color_bar_boarder.push([BM.COLOR_AREA.LEFT-1 , row]);
+    }
+}
+
+function initColorBarContentArray(){
+
+    for (let i = 0; i < BM.color_bar_content_length ; i ++){
+        BM.color_bar_content.default.push(BM.BUTTON_COLORS.COLOR_BAR.DEFAULT);
+    }
+
+    for (let i = 0; i < BM.color_bar_content_length ; i ++){
+        BM.color_bar_content.blue.push(BM.BUTTON_COLORS.COLOR_BAR.BLUE[i % (BM.BUTTON_COLORS.COLOR_BAR.BLUE.length - 1)]);
+    }
+
+}
+
+function drawColorBarContent(){
+
+    const current_color_array = BM.color_bar_content[BM.color_bar_current_color];
+    const current_color_array_length = current_color_array.length;
+
+    for (let col = 0; col < BM.color_bar_content_length ; col ++){
+        for (let row = BM.COLOR_AREA.TOP; row < BM.COLOR_AREA.BOTTOM + 1; row ++) {
+
+            const index = Math.abs((BM.color_bar_current_content_index - col - row) % (current_color_array_length-1));
+            PS.color(BM.COLOR_AREA.LEFT + col, row, current_color_array[index])
+        }
+    }
+}
+
+function drawColorBoarder(){
+
+    if (BM.color_bar_current_color === "default") return;
+
+    let x, y;
+    for (let i = 0; i < BM.color_bar_boarder.length; i ++){
+
+        const index = Math.abs((BM.color_bar_current_boarder_index + i) % (BM.color_bar_boarder.length-1));
+
+        x = BM.color_bar_boarder[index][0];
+        y = BM.color_bar_boarder[index][1];
+
+        if (i % 4 === 0) {
+            PS.color(x, y, BM.BUTTON_COLORS.ARROW.ACTIVE);
+        } else {
+            PS.color(x,y, BM.BUTTON_COLORS.ARROW.INACTIVE);
+        }
+
+    }
+
+}
 
 //endregion
 

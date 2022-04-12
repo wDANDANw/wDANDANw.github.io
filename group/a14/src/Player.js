@@ -92,6 +92,13 @@ const Player = {
         if ( !Player.jumping && Player.can_jump ) {
             Player.jump_updates = [ ... Player.HARDCODED_JUMP_UPDATE_SERIES ]; // Deep Copy
             Player.jumping = true;
+
+            // Play jump sound
+            const random_jump_name = "Jump" + PS.random(3);
+            SM.play(random_jump_name);
+
+            // Mark the button to active
+            BM.drawArrows(BM.arrows["up"],BM.BUTTON_STATUS.ACTIVE);
         }
     } ,
 

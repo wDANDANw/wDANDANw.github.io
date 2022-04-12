@@ -1,8 +1,5 @@
 {
 	"level" : 2,
-	"level_dialogue": {
-		"d1" : "It's been four years"
-	},
 	"player" : {
 		"position" : {
 			"x" : 4,
@@ -18,7 +15,8 @@
 			"type" : "dest",
 			"tags" : [
 				"next_level"
-			]
+			],
+			"size" : 1
 		}
 	},
 	"platforms" : {
@@ -61,6 +59,23 @@
 					"arrow_pickup",
 					"left"
 				]
+			}
+		}
+	},
+	"dialogues": {
+		"d1" : {
+			"position" : {
+				"x": 4,
+				"y": 15
+			},
+			"data" : {
+				"tags" : ["dialogue"],
+				"dialogue_data" : {
+					"visited": 0,
+					"dialogue_dict": {
+						"1" : "It's been four years."
+					}
+				}
 			}
 		}
 	}

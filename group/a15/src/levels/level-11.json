@@ -1,14 +1,14 @@
 {
-	"level" : 5,
+	"level" : 7,
 	"player" : {
 		"position" : {
 			"x" : 3,
-			"y" : 2
+			"y" : 15
 		}
 	},
 	"dest" : {
 		"position" : {
-			"x" : 1,
+			"x" : 17,
 			"y" : 15
 		},
 		"data" : {
@@ -20,10 +20,105 @@
 		}
 	},
 	"platforms" : {
-		"level_ground" : {
+		"2x2_1" : {
 			"position" : {
 				"upper_left" : {
 					"x" : 1,
+					"y" : 14
+				},
+				"lower_right" : {
+					"x" : 2,
+					"y" : 15
+				}
+			},
+			"data" : {
+				"type" : "ground",
+				"tags" : [
+					"ground"
+				],
+				"color" : "0x000000"
+			}
+		},
+		"2x2_2" : {
+			"position" : {
+				"upper_left" : {
+					"x" : 4,
+					"y" : 14
+				},
+				"lower_right" : {
+					"x" : 5,
+					"y" : 15
+				}
+			},
+			"data" : {
+				"type" : "ground",
+				"tags" : [
+					"ground"
+				],
+				"color" : "0x000000"
+			}
+		},
+		"5x1_1" : {
+			"position" : {
+				"upper_left" : {
+					"x" : 1,
+					"y" : 16
+				},
+				"lower_right" : {
+					"x" : 5,
+					"y" : 16
+				}
+			},
+			"data" : {
+				"type" : "ground",
+				"tags" : [
+					"ground"
+				],
+				"color" : "0x000000"
+			}
+		},
+		"1x1_1" : {
+			"position" : {
+				"upper_left" : {
+					"x" : 1,
+					"y" : 11
+				},
+				"lower_right" : {
+					"x" : 1,
+					"y" : 11
+				}
+			},
+			"data" : {
+				"type" : "ground",
+				"tags" : [
+					"ground"
+				],
+				"color" : "0x000000"
+			}
+		},
+		"5x1_2" : {
+			"position" : {
+				"upper_left" : {
+					"x" : 6,
+					"y" : 10
+				},
+				"lower_right" : {
+					"x" : 10,
+					"y" : 10
+				}
+			},
+			"data" : {
+				"type" : "ground",
+				"tags" : [
+					"ground"
+				],
+				"color" : "0x000000"
+			}
+		},
+		"3x1_2" : {
+			"position" : {
+				"upper_left" : {
+					"x" : 17,
 					"y" : 16
 				},
 				"lower_right" : {
@@ -39,126 +134,78 @@
 				"color" : "0x000000"
 			}
 		},
-		"2x5_1" : {
+		"b_ground" : {
 			"position" : {
 				"upper_left" : {
-					"x" : 4,
+					"x" : 6,
+					"y" : 16
+				},
+				"lower_right" : {
+					"x" : 16,
+					"y" : 16
+				}
+			},
+			"data" : {
+				"type" : "blue",
+				"tags" : [
+					"blue"
+				],
+				"color" : "blue",
+				"active": true
+			}
+		},
+		"b_6x2_1" : {
+			"position" : {
+				"upper_left" : {
+					"x" : 11,
+					"y" : 10
+				},
+				"lower_right" : {
+					"x" : 16,
 					"y" : 11
-				},
-				"lower_right" : {
-					"x" : 5,
-					"y" : 15
 				}
 			},
 			"data" : {
-				"type" : "ground",
+				"type" : "blue",
 				"tags" : [
-					"ground"
+					"blue"
 				],
-				"color" : "0x000000"
+				"color" : "blue",
+				"active": true
 			}
 		},
-		"4x1_1" : {
+		"b_2x4_1" : {
 			"position" : {
 				"upper_left" : {
-					"x" : 1,
-					"y" : 3
-				},
-				"lower_right" : {
-					"x" : 4,
-					"y" : 3
-				}
-			},
-			"data" : {
-				"type" : "ground",
-				"tags" : [
-					"ground"
-				],
-				"color" : "0x000000"
-			}
-		},
-		"4x1_2" : {
-			"position" : {
-				"upper_left" : {
-					"x" : 5,
-					"y" : 8
-				},
-				"lower_right" : {
-					"x" : 8,
-					"y" : 8
-				}
-			},
-			"data" : {
-				"type" : "ground",
-				"tags" : [
-					"ground"
-				],
-				"color" : "0x000000"
-			}
-		},
-		"4x1_3" : {
-			"position" : {
-				"upper_left" : {
-					"x" : 9,
-					"y" : 10
-				},
-				"lower_right" : {
-					"x" : 12,
-					"y" : 10
-				}
-			},
-			"data" : {
-				"type" : "ground",
-				"tags" : [
-					"ground"
-				],
-				"color" : "0x000000"
-			}
-		},
-		"4x1_4" : {
-			"position" : {
-				"upper_left" : {
-					"x" : 13,
+					"x" : 15,
 					"y" : 12
 				},
 				"lower_right" : {
 					"x" : 16,
-					"y" : 12
+					"y" : 15
 				}
 			},
 			"data" : {
-				"type" : "ground",
+				"type" : "blue",
 				"tags" : [
-					"ground"
+					"blue"
 				],
-				"color" : "0x000000"
+				"color" : "blue",
+				"active": true
 			}
 		}
 	},
 	"buttons" : {
 		"unlocked" : {
 			"arrows" : [
-				"right"
+				"up"
 			]
 		}
 	},
 	"pickups" : {
-		"up_arrow" : {
-			"position" : {
-				"x" : 6,
-				"y" : 15
-			},
-			"data" : {
-				"type" : "arrow_up",
-				"tags" : [
-					"arrow_pickup",
-					"up"
-				]
-			}
-		},
 		"left_arrow" : {
 			"position" : {
-				"x" : 19,
+				"x" : 12,
 				"y" : 15
 			},
 			"data" : {
@@ -166,6 +213,32 @@
 				"tags" : [
 					"arrow_pickup",
 					"left"
+				]
+			}
+		},
+		"right_arrow" : {
+			"position" : {
+				"x" : 3,
+				"y" : 12
+			},
+			"data" : {
+				"type" : "arrow_right",
+				"tags" : [
+					"arrow_pickup",
+					"right"
+				]
+			}
+		},
+		"blue" : {
+			"position" : {
+				"x" : 8,
+				"y" : 9
+			},
+			"data" : {
+				"type" : "blue_pickup",
+				"tags" : [
+					"color_pickup",
+					"blue_pickup"
 				]
 			}
 		}

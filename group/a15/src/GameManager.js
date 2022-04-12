@@ -66,6 +66,8 @@ const GM = {
      */
     update : function () {
         Player.update();
+        DM.update();
+        BM.update();
     },
 
     /**
@@ -123,7 +125,7 @@ function initBorders() {
 
 // Load the tutorial level to start
 function start() {
-    LM.loadLevel(1);
+    LM.loadLevel(7);
 }
 
 //endregion

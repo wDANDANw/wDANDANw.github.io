@@ -5,6 +5,7 @@
 import CONFIG from "./config.js";
 import Player from "./Player.js";
 import BM from "./ButtonManager.js";
+import DM from "./DialogueManager.js";
 
 let levels = {};
 
@@ -19,19 +20,24 @@ const LM = {
     } ,
 
     DEST_COLOR: 0x8BC34A ,
+    BLUE_COLOR: 0x03A9F4 ,
+    YELLOW_COLOR: 0x03A9F4 ,
+    PURPLE_COLOR: 0x03A9F4 ,
 
     PICKUP: {
-        BORDER_WIDTH: 5,
-        RADIUS:20,
-    },
+        BORDER_WIDTH: 5 ,
+        RADIUS: 20 ,
+    } ,
 
-    NUM_OF_LEVELS : 5,
+    NUM_OF_LEVELS: 14 ,
 
     //endregion
 
     //region Variables
     player: null ,
     current_level: 1 ,
+
+    blue_walls: [] ,
 
     //endregion
 
@@ -75,15 +81,30 @@ const LM = {
     resetLevel: function () {
         resetCanvas();
         renderLevel( LM.current_level );
-    },
+    } ,
 
     /**
      * Checks a point to see if it is in the level
      * @param x
      * @param y
      */
-    isLevelArea : function (x , y) {
-        return !( ( x < LM.GENERAL_AREA.LEFT || x >LM.GENERAL_AREA.RIGHT) || ( y < LM.GENERAL_AREA.TOP || y > LM.GENERAL_AREA.BOTTOM) ); // Needs a ! at the beginning because this checks outside of area
+    isLevelArea: function (x , y) {
+        return !((x < LM.GENERAL_AREA.LEFT || x > LM.GENERAL_AREA.RIGHT) || (y < LM.GENERAL_AREA.TOP || y > LM.GENERAL_AREA.BOTTOM)); // Needs a ! at the beginning because this checks outside of area
+    } ,
+
+    /**
+     * Function to turn on / off the blue walls in the level
+     * @param bool
+     */
+    setBlueWalls: function (bool) {
+
+        LM.blue_walls.forEach( blue_wall => {
+
+            let data = blue_wall[2];
+            data.active = bool;
+
+            drawOnePlatformBead(blue_wall[0], blue_wall[1], data);
+        })
     }
 
     //endregion
@@ -116,18 +137,13 @@ function renderLevel(level) {
 
     const level_data = levels[level];
 
-    // Initialize and Render the player
-    Player.x = level_data.player.position.x;
-    Player.y = level_data.player.position.y;
-
-    Player.move( Player.x , Player.y );
-
     // Render the destination
     const destX = level_data.dest.position.x;
     const destY = level_data.dest.position.y;
+    const size = level_data.dest.data.size;
     const dest_data = level_data.dest.data;
 
-    drawDestination( destX , destY , dest_data );
+    drawDestination( destX , destY , size , dest_data );
 
     // Render the platforms and grounds
     const platforms = level_data.platforms
@@ -140,20 +156,34 @@ function renderLevel(level) {
     const pickups = level_data.pickups;
     drawPickups( pickups );
 
-    // Change the status line
-    PS.statusText(level_data.level_dialogue.d1);
+    // Draw the dialogue points
+    const dialogues = level_data.dialogues;
+    DM.renderDialoguesInLevel( dialogues );
+
+    // Initialize and Render the player
+    // Put at last to process potential collision
+    Player.x = level_data.player.position.x;
+    Player.y = level_data.player.position.y;
+
+    Player.move( Player.x , Player.y );
 }
 
 // Function to draw destination
-function drawDestination(x , y , data) {
-    PS.color( x , y , LM.DEST_COLOR );
-    PS.data( x , y , data );
+function drawDestination(x , y , size , data) {
+
+    // Draw the destination in square
+    for ( let i = 0 ; i < size ; i ++ ) {
+        for ( let j = 0 ; j < size ; j ++ ) {
+            PS.color( x + i , y - j , LM.DEST_COLOR );
+            PS.data( x + i , y - j , data );
+        }
+    }
 }
 
 // Function to draw platforms in a level
 function drawPlatforms(platforms) {
 
-    const local_copy = JSON.parse(JSON.stringify(platforms)); // Deep Copy
+    const local_copy = JSON.parse( JSON.stringify( platforms ) ); // Deep Copy
 
     for ( let [ platform_name , platform_data ] of Object.entries( local_copy ) ) {
 
@@ -164,8 +194,13 @@ function drawPlatforms(platforms) {
 
         const data = platform_data.data;
 
+
         for ( let col = col_start ; col <= col_end ; col ++ ) {
             for ( let row = row_start ; row <= row_end ; row ++ ) {
+
+                if ( data.type === "blue" ) {
+                    LM.blue_walls.push( [ col , row , data ] );
+                }
 
                 drawOnePlatformBead( col , row , data );
 
@@ -176,16 +211,48 @@ function drawPlatforms(platforms) {
 
 }
 
+function getPSColor(param_color) {
+    let color = Number( param_color );
+
+    if ( Number.isNaN( color ) ) {
+        switch ( param_color ) {
+            case "blue":
+                color = LM.BLUE_COLOR;
+                break;
+            case "yellow":
+                color = LM.YELLOW_COLOR;
+                break;
+            case "red":
+                color = LM.PURPLE_COLOR;
+                break;
+            default:
+                color = PS.COLOR_RED;
+                break;
+        }
+    }
+
+    return color;
+}
+
 // Function to draw one platform bead
 function drawOnePlatformBead(x , y , data) {
-    PS.color( x , y , Number( data.color ) );
+
+    let color = getPSColor( data.color );
+
+    if (data.type === "blue") {
+        if (!data.active) {
+            color = PS.COLOR_WHITE;
+        }
+    }
+
+    PS.color( x , y , color );
     PS.data( x , y , data );
 }
 
 // Function to draw pickups
 function drawPickups(pickups) {
 
-    const local_copy = JSON.parse(JSON.stringify(pickups)); // Deep Copy
+    const local_copy = JSON.parse( JSON.stringify( pickups ) ); // Deep Copy
 
     if ( Object.keys( local_copy ).length > 0 ) {
 
@@ -197,9 +264,7 @@ function drawPickups(pickups) {
             const data = pickup.data;
 
             drawOnePickup( x , y , data );
-
         } )
-
     }
 
 }
@@ -207,19 +272,23 @@ function drawPickups(pickups) {
 // Function to draw one pickup
 function drawOnePickup(x , y , data) {
 
-    PS.border(x,y,LM.PICKUP.BORDER_WIDTH);
-    PS.radius(x,y,LM.PICKUP.RADIUS);
-    PS.bgColor ( x, y, CONFIG.BEAD_BACKGROUND_COLOR);
-    PS.bgAlpha( x, y, PS.ALPHA_OPAQUE );
+    PS.border( x , y , LM.PICKUP.BORDER_WIDTH );
+    PS.radius( x , y , LM.PICKUP.RADIUS );
+    PS.bgColor( x , y , CONFIG.BEAD_BACKGROUND_COLOR );
+    PS.bgAlpha( x , y , PS.ALPHA_OPAQUE );
 
-    if (data.tags.includes("arrow_pickup")) {
-        drawArrowPickup(x,y,data.type, data);
+    if ( data.tags.includes( "arrow_pickup" ) ) {
+        drawArrowPickup( x , y , data.type , data );
+    }
+
+    if ( data.tags.includes( "color_pickup" ) ) {
+        drawColorPickup( x , y , data.type , data );
     }
 
 }
 
 // Function to draw an arrow pickup
-function drawArrowPickup(x,y,arrow,data){
+function drawArrowPickup(x , y , arrow , data) {
 
     let glyph_unicode = "O";
     switch ( arrow ) {
@@ -236,8 +305,32 @@ function drawArrowPickup(x,y,arrow,data){
             break;
     }
 
-    PS.glyph(x,y,glyph_unicode);
-    PS.data(x,y,data);
+    PS.glyph( x , y , glyph_unicode );
+    PS.data( x , y , data );
+
+}
+
+// Function to draw a color pickup
+function drawColorPickup(x , y , color_type , data) {
+
+    let color = PS.COLOR_BLACK;
+
+    switch ( color_type ) {
+        case "blue_pickup" :
+            color = LM.BLUE_COLOR;
+            break;
+        case "yellow_pickup" :
+            color = LM.YELLOW_COLOR;
+            break;
+        case "purple_pickup" :
+            color = LM.PURPLE_COLOR;
+            break;
+        default:
+            break;
+    }
+
+    PS.color( x , y , color );
+    PS.data( x , y , data );
 
 }
 
@@ -261,7 +354,7 @@ function resetCanvas() {
     }
 
     Player.reset();
-
+    DM.reset();
 }
 
 

@@ -162,20 +162,12 @@ This function doesn't have to do anything. Any value returned is ignored.
 PS.keyDown = function( key, shift, ctrl, options ) {
 
     //TODO: Change to feed into the game loop and then update
-    if (key === PS.KEY_ARROW_RIGHT && Player.unlocked.includes("right")) {
+    if (key === PS.KEY_ARROW_RIGHT && Player.unlocked_arrow.includes("right")) {
         Player.moving_right = true;
-    } else if (key === PS.KEY_ARROW_LEFT && Player.unlocked.includes("left")) {
+    } else if (key === PS.KEY_ARROW_LEFT && Player.unlocked_arrow.includes("left")) {
         Player.moving_left = true;
-    } else if (key === PS.KEY_ARROW_UP && Player.unlocked.includes("up")) {
-
-        if (LM.current_level === 3) {
-            PS.statusText("but not the freedom of your soul");
-        }
-
+    } else if (key === PS.KEY_ARROW_UP && Player.unlocked_arrow.includes("up")) {
         Player.jump();
-        const random_jump_name = "Jump" + PS.random(3) + ".wav";
-        SM.play(random_jump_name);
-        BM.drawArrows(BM.arrows["up"],BM.BUTTON_STATUS.ACTIVE);
     }
 
 };
@@ -192,13 +184,13 @@ This function doesn't have to do anything. Any value returned is ignored.
 
 PS.keyUp = function( key, shift, ctrl, options ) {
 
-    if (key === PS.KEY_ARROW_RIGHT && Player.unlocked.includes("right")) {
+    if (key === PS.KEY_ARROW_RIGHT && Player.unlocked_arrow.includes("right")) {
         Player.moving_right = false;
         BM.drawArrows(BM.arrows["right"],BM.BUTTON_STATUS.INACTIVE);
-    } else if (key === PS.KEY_ARROW_LEFT && Player.unlocked.includes("left")) {
+    } else if (key === PS.KEY_ARROW_LEFT && Player.unlocked_arrow.includes("left")) {
         Player.moving_left = false;
         BM.drawArrows(BM.arrows["left"],BM.BUTTON_STATUS.INACTIVE);
-    } else if (key === PS.KEY_ARROW_UP && Player.unlocked.includes("up")) {
+    } else if (key === PS.KEY_ARROW_UP && Player.unlocked_arrow.includes("up")) {
         BM.drawArrows(BM.arrows["up"],BM.BUTTON_STATUS.INACTIVE);
     }
 
