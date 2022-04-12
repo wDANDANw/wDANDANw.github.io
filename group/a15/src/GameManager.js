@@ -125,7 +125,7 @@ function initBorders() {
 
 // Load the tutorial level to start
 function start() {
-    LM.loadLevel(1);
+    LM.loadLevel(5);
 }
 
 //endregion

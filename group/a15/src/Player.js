@@ -288,6 +288,8 @@ function getPickup(x , y , data) {
     const random_jump_name = "Powerup" + PS.random(3);
     SM.play(random_jump_name);
 
+    console.log(data)
+
     switch ( data.type ) {
         case "arrow_up" :
             ability_to_add = "up";
