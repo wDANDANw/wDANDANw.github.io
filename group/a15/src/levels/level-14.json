@@ -406,11 +406,11 @@
 			"position" : {
 				"upper_left" : {
 					"x" : 7,
-					"y" : 8
+					"y" : 9
 				},
 				"lower_right" : {
 					"x" : 7,
-					"y" : 9
+					"y" : 10
 				}
 			},
 			"data" : {
@@ -532,7 +532,7 @@
 		"yellow3" : {
 			"position" : {
 				"x" : 2,
-				"y" : 6
+				"y" : 5
 			},
 			"data" : {
 				"type" : "yellow_pickup",
@@ -552,6 +552,19 @@
 				"tags" : [
 					"color_pickup",
 					"yellow_pickup"
+				]
+			}
+		},
+		"blue_1" : {
+			"position" : {
+				"x" : 6,
+				"y" : 1
+			},
+			"data" : {
+				"type" : "blue_pickup",
+				"tags" : [
+					"color_pickup",
+					"blue_pickup"
 				]
 			}
 		}
