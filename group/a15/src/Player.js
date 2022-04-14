@@ -22,6 +22,7 @@ const Player = {
     unlocked_arrow: [] ,
     unlocked_color : "default",
     num_pickup_eaten: 0 ,
+    grown : false,
     size: 1 ,
     body_list: [ [ 0 , 0 ] ] ,
 
@@ -79,6 +80,27 @@ const Player = {
                 local_y = body_coord[1] + Player.y;
 
                 PS.color( local_x , local_y , CONFIG.BEAD_BACKGROUND_COLOR );
+
+                // Fix potential erase of wall after grown
+                if (Player.grown) {
+
+                    // Fix the after grow up erased wall bug
+                    let fix_x, fix_y, fix_data;
+                    for ( let col = 0; col < Player.size; col++){
+                        for ( let row = 0; row < Player.size + 1; row++){ // Maybe 1 bead bottom as well
+
+                            fix_x = Player.x - Player.size + 1 + col;
+                            fix_y = Player.y - Player.size + 1 + row;
+                            fix_data = PS.data(fix_x, fix_y);
+
+                            if (fix_data !== 0 && fix_data.tags.includes("ground")){
+                                PS.color( fix_x , fix_y , Number(fix_data.color) );
+                            }
+                        }
+                    }
+
+                    Player.grown = false;
+                }
 
                 // Update moving bead
                 local_x = body_coord[0] + x;
@@ -165,6 +187,7 @@ const Player = {
         Player.body_list = [ [ 0 , 0 ] ];
         Player.num_pickup_eaten = 0;
         Player.size = 1;
+        Player.grown = false;
         Player.jumping = false;
         Player.can_jump = true;
         Player.x = 1;
@@ -287,8 +310,6 @@ function getPickup(x , y , data) {
     const random_jump_name = "Powerup" + PS.random(3);
     SM.play(random_jump_name);
 
-    console.log(data)
-
     switch ( data.type ) {
         case "arrow_up" :
             ability_to_add = "up";
@@ -363,6 +384,7 @@ function shouldFall(){
 function growUp() {
 
     Player.num_pickup_eaten += 1;
+    Player.grown = true;
 
     // Change the size
     Player.size += 1;
@@ -381,7 +403,6 @@ function growUp() {
 
     // And the least bead at the corner
     Player.body_list.push([-(Player.size - 1), - (Player.size - 1)]);
-
 }
 
 // Function to check if can grow up at given location
