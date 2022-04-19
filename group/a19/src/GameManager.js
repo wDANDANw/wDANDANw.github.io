@@ -7,6 +7,7 @@ import DM from "./DialogueManager.js";
 import LM from "./LevelManager.js";
 import Player from "./Player.js";
 import SM from "./SoundManager.js";
+import Snake from "./snake.js";
 
 const GM = {
 
@@ -40,8 +41,14 @@ const GM = {
         // Initialize the Level Manger (load levels to memory)
         LM.init();
 
+        //
+        DM.init();
+
         // Start the game loop
         GM.restartGameLoop();
+
+        // Snake
+        Snake.init();
 
         // Load level 1 to start
         start();
@@ -57,7 +64,14 @@ const GM = {
      * Player's update is dependent on this
      */
     update : function () {
-        Player.update();
+
+        if (Player.type === "bead") {
+            Player.update();
+        } else if (Player.type === "snake") {
+            Snake.update();
+        }
+
+        DM.update();
     },
 
     /**

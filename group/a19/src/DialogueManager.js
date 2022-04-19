@@ -5,7 +5,7 @@
 const DM = {
 
     //region Constants
-    DEFAULT_TEXT: "The Rally" ,                                 // Default status text
+    DEFAULT_TEXT: "The Resit" ,                                 // Default status text
     STATUS_COLOR: PS.COLOR_YELLOW,                               // Default status text color
     RESET_TIME: 10,                                             // Time to reset fully displayed message to default text
     DISPLAY_SPEED: 2,                                            // Updates of index of message each frame

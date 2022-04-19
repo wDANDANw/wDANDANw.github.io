@@ -6,6 +6,7 @@ import CONFIG from "./config.js";
 import Player from "./Player.js";
 import GM from "./GameManager.js";
 import DM from "./DialogueManager.js";
+import Snake from "./snake.js";
 
 const LM = {
 

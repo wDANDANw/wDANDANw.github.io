@@ -51,6 +51,7 @@ Any value returned is ignored.
 import GM from "./src/GameManager.js";
 import Player from "./src/Player.js";
 import LM from "./src/LevelManager.js";
+import Snake from "./src/snake.js";
 
 PS.init = function( system, options ) {
 
@@ -159,39 +160,81 @@ This function doesn't have to do anything. Any value returned is ignored.
 
 PS.keyDown = function( key, shift, ctrl, options ) {
 
-    Player.inputs.inputted = true;
+    if ( Player.type === "bead" ) {
+        Player.inputs.inputted = true;
 
-    switch ( key ) {
-        case PS.KEY_ARROW_UP:
-        case 87:
-        case 119: {
-            Player.inputs.up = true;
-            break;
+        switch ( key ) {
+            case PS.KEY_ARROW_UP:
+            case 87:
+            case 119: {
+                Player.inputs.up = true;
+                break;
+            }
+            case PS.KEY_ARROW_DOWN:
+            case 83:
+            case 115: {
+                Player.inputs.down = true;
+                break;
+            }
+            case PS.KEY_ARROW_LEFT:
+            case 65:
+            case 97: {
+                Player.inputs.left = true
+                break;
+            }
+            case PS.KEY_ARROW_RIGHT:
+            case 68:
+            case 100: {
+                Player.inputs.right = true;
+                break;
+            }
+            case PS.KEY_SPACE: {
+                Player.inputs.space = true;
+                break;
+            }
+            default: {
+                break;
+            }
         }
-        case PS.KEY_ARROW_DOWN:
-        case 83:
-        case 115: {
-            Player.inputs.down = true;
-            break;
-        }
-        case PS.KEY_ARROW_LEFT:
-        case 65:
-        case 97: {
-            Player.inputs.left = true
-            break;
-        }
-        case PS.KEY_ARROW_RIGHT:
-        case 68:
-        case 100: {
-            Player.inputs.right = true;
-            break;
-        }
-        case PS.KEY_SPACE: {
-            Player.inputs.space = true;
-            break;
-        }
-        default: {
-            break;
+    }
+
+    if (Player.type === "snake") {
+        switch ( key ) {
+            case PS.KEY_ARROW_UP:
+            case 87:
+            case 119: {
+                if (Snake.d !== "UP") {
+                    Snake.d = "UP";
+                }
+                break;
+            }
+            case PS.KEY_ARROW_DOWN:
+            case 83:
+            case 115: {
+                if (Snake.d !== "DOWN") {
+                    Snake.d = "DOWN";
+                }
+                break;
+            }
+            case PS.KEY_ARROW_LEFT:
+            case 65:
+            case 97: {
+                if (Snake.d !== "LEFT") {
+                    Snake.d = "LEFT";
+                }
+                break;
+            }
+            case PS.KEY_ARROW_RIGHT:
+            case 68:
+            case 100: {
+                if (Snake.d !== "RIGHT") {
+                    Snake.d = "RIGHT";
+                }
+                break;
+            }
+            default: {
+                break;
+            }
         }
     }
 
@@ -209,37 +252,39 @@ This function doesn't have to do anything. Any value returned is ignored.
 
 PS.keyUp = function( key, shift, ctrl, options ) {
 
-    switch ( key ) {
-        case PS.KEY_ARROW_UP:
-        case 87:
-        case 119: {
-            Player.inputs.up = false;
-            break;
-        }
-        case PS.KEY_ARROW_DOWN:
-        case 83:
-        case 115: {
-            Player.inputs.down = false;
-            break;
-        }
-        case PS.KEY_ARROW_LEFT:
-        case 65:
-        case 97: {
-            Player.inputs.left = false;
-            break;
-        }
-        case PS.KEY_ARROW_RIGHT:
-        case 68:
-        case 100: {
-            Player.inputs.right = false;
-            break;
-        }
-        case PS.KEY_SPACE: {
-            Player.inputs.space = false;
-            break;
-        }
-        default: {
-            break;
+    if (Player.type === "bead") {
+        switch ( key ) {
+            case PS.KEY_ARROW_UP:
+            case 87:
+            case 119: {
+                Player.inputs.up = false;
+                break;
+            }
+            case PS.KEY_ARROW_DOWN:
+            case 83:
+            case 115: {
+                Player.inputs.down = false;
+                break;
+            }
+            case PS.KEY_ARROW_LEFT:
+            case 65:
+            case 97: {
+                Player.inputs.left = false;
+                break;
+            }
+            case PS.KEY_ARROW_RIGHT:
+            case 68:
+            case 100: {
+                Player.inputs.right = false;
+                break;
+            }
+            case PS.KEY_SPACE: {
+                Player.inputs.space = false;
+                break;
+            }
+            default: {
+                break;
+            }
         }
     }
 

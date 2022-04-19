@@ -6,6 +6,7 @@ import CONFIG from "./config.js";
 import LM from "./LevelManager.js";
 import SM from "./SoundManager.js";
 import DM from "./DialogueManager.js";
+import GM from "./GameManager.js";
 
 const Player = {
 
@@ -204,6 +205,8 @@ function processCollide(x , y) {
                     const color = PS.data(Player.x, Player.y).color;
                     PS.color( Player.x , Player.y , color[0], color[1], color[2]);
                     Player.type = "snake";
+                    CONFIG.FRAME_RATE = 5;
+                    GM.restartGameLoop();
 
                 default:
                     break;
