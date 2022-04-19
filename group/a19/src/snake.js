@@ -9,6 +9,8 @@ import DM from "./DialogueManager.js"
 
 let food = {x: 7, y:7}
 
+let specialAreas = []
+
 
 const Snake = {
 
@@ -31,10 +33,25 @@ const Snake = {
             }
         }
 
+        specialAreas[0] = {x:11, y:14}
+        for ( let i = 0; i < 4 ; i++){
+            specialAreas[i] = {
+                x:11+i, y:15
+            }
+        }
+
     },
 
     update : function () {
         if (Snake.died) return;
+
+        if (Snake.score > 3) {
+            DM.showMessage("Normal Ending. Thanks for playing!");
+            Snake.died = true;
+            return;
+        }
+
+        PS.color(food.x, food.y, 66, 66, 66)
 
         if(!LM.isLevelArea(Snake.snake[0].x, Snake.snake[0].y)){
             DM.showMessage("Snake Game Dead. Thanks for playing!");
@@ -78,11 +95,10 @@ const Snake = {
             food = {
                 x: x, y: y
             }
-
-            PS.color(food.x, food.y, 66, 66, 66)
         }else{
             // remove the tail
-            Snake.snake.pop();
+            const tail = Snake.snake.pop();
+            PS.color(tail.x, tail.y, 0, 0, 0)
         }
 
         // add new Head
@@ -96,6 +112,15 @@ const Snake = {
 
         if(collision(newHead,Snake.snake)){
             DM.showMessage("Snake Game Dead. Thanks for playing!");
+            Snake.died = true;
+            return;
+        }
+
+        if (collision(newHead, specialAreas)) {
+            DM.showMessage("Easter Egg Ending. Thanks for playing!");
+            Snake.died = true;
+            return;
+
         }
 
         Snake.snake.unshift(newHead);
