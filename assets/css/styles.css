@@ -118,7 +118,7 @@ transition:.5s ease all;
 .hero-text {
 position:absolute;
 z-index:10;
-top:50%;
+top:70%;
 left:50%;
 transform:translate(-50%, -50%);
 text-align:center;
