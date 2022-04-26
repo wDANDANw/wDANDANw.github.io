@@ -21,6 +21,8 @@ let playerType = 'bead';
 let counter = 0;
 let stage = 0;
 
+let snake_counter = 0;
+
 const LV3 = {
 
     init : function () {
@@ -110,7 +112,10 @@ const LV3 = {
             if( Player.direction === Player.INPUTS.DOWN && (Snake.d !== "DOWN") && (Snake.d !== "UP")) Snake.d = "DOWN"
 
 
-            Snake.update();
+            if (snake_counter ++ > 2) {
+                snake_counter = 0;
+                Snake.update();
+            }
 
         }
     },
