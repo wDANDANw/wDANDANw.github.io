@@ -54,6 +54,10 @@ class Vector2 extends BaseObject{
         return new Vector2(this.x + b.x, this.y + b.y);
     }
 
+    equal(b) {
+        return this.x === b.x && this.y === b.y;
+    }
+
 }
 
 export default Vector2;

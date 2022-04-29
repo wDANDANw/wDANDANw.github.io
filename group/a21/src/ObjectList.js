@@ -18,6 +18,7 @@ class ObjectList {
 
         this.inner_list.push(object);
         this.size ++;
+        return this;
     }
 
     remove(object) {
@@ -33,6 +34,12 @@ class ObjectList {
 
         this.inner_list.splice(index, 1);
         this.size --;
+        return this;
+    }
+
+    pop(){
+        this.size--;
+        return this.inner_list.pop();
     }
 
     removeAll(){
@@ -63,7 +70,7 @@ class ObjectList {
 
     isValidObjectTypeOfList (object){
         // TODO Add support for inheritance check
-        if (object.prototype instanceof BaseObject) {
+        if (object instanceof BaseObject) {
             if (object.type === this.type) {
                 return true;
             }

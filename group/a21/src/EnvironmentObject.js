@@ -12,6 +12,27 @@ class EnvironmentObject extends GameObject{
         this.tags = [globals.TAGS.ENVIRONMENT];
     };
 
+    draw() {
+
+        // Draw
+        PS.color(this.geometry.position.x, this.geometry.position.y, this.mesh.color);
+
+        // Update Data
+        let current_data = PS.data(this.geometry.position.x, this.geometry.position.y);
+        if (!current_data) {
+            current_data = {};
+        }
+
+        current_data['environment'] = this;
+        PS.data(this.geometry.position.x, this.geometry.position.y, current_data);
+
+        return this;
+    };
+
+    static isEnvironmentObject(object){
+        return object.prototype instanceof EnvironmentObject;
+    }
+
 }
 
 export default EnvironmentObject;

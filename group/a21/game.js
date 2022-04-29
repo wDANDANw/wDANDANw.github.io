@@ -53,10 +53,16 @@ Any value returned is ignored.
 */
 
 import GameManager from "./src/GameManager.js";
+import InputManager from "./src/InputManager.js";
+import globals from "./src/globals.js";
 
 PS.init = function( system, options ) {
 
-    GameManager.getInstance();
+    if (!GameManager.getInstance().startUp()) {
+        console.error("Failed to start up")
+    }
+
+    GameManager.getInstance().run();
 
 };
 
@@ -161,39 +167,39 @@ This function doesn't have to do anything. Any value returned is ignored.
 
 PS.keyDown = function( key, shift, ctrl, options ) {
 
-    // switch ( key ) {
-    //     case PS.KEY_ARROW_UP:
-    //     case 87:
-    //     case 119: {
-    //         Player.direction = Player.INPUTS.UP;
-    //         break;
-    //     }
-    //     case PS.KEY_ARROW_DOWN:
-    //     case 83:
-    //     case 115: {
-    //         Player.direction = Player.INPUTS.DOWN;
-    //         break;
-    //     }
-    //     case PS.KEY_ARROW_LEFT:
-    //     case 65:
-    //     case 97: {
-    //         Player.direction = Player.INPUTS.LEFT;
-    //         break;
-    //     }
-    //     case PS.KEY_ARROW_RIGHT:
-    //     case 68:
-    //     case 100: {
-    //         Player.direction = Player.INPUTS.RIGHT;
-    //         break;
-    //     }
-    //     case PS.KEY_SPACE: {
-    //         Player.space = true;
-    //         break;
-    //     }
-    //     default: {
-    //         break;
-    //     }
-    // }
+    switch ( key ) {
+        case PS.KEY_ARROW_UP:
+        case 87:
+        case 119: {
+            InputManager.getInstance().broadcastInput(globals.KEYBOARD.KEYS.UP, globals.KEYBOARD.STATUS.KEYDOWN);
+            break;
+        }
+        case PS.KEY_ARROW_DOWN:
+        case 83:
+        case 115: {
+            InputManager.getInstance().broadcastInput(globals.KEYBOARD.KEYS.DOWN, globals.KEYBOARD.STATUS.KEYDOWN);
+            break;
+        }
+        case PS.KEY_ARROW_LEFT:
+        case 65:
+        case 97: {
+            InputManager.getInstance().broadcastInput(globals.KEYBOARD.KEYS.LEFT, globals.KEYBOARD.STATUS.KEYDOWN);
+            break;
+        }
+        case PS.KEY_ARROW_RIGHT:
+        case 68:
+        case 100: {
+            InputManager.getInstance().broadcastInput(globals.KEYBOARD.KEYS.RIGHT, globals.KEYBOARD.STATUS.KEYDOWN);
+            break;
+        }
+        case PS.KEY_SPACE: {
+            InputManager.getInstance().broadcastInput(globals.KEYBOARD.KEYS.SPACE, globals.KEYBOARD.STATUS.KEYDOWN);
+            break;
+        }
+        default: {
+            break;
+        }
+    }
 };
 
 /*
@@ -208,47 +214,39 @@ This function doesn't have to do anything. Any value returned is ignored.
 
 PS.keyUp = function( key, shift, ctrl, options ) {
 
-    // switch ( key ) {
-    //     case PS.KEY_ARROW_UP:
-    //     case 87:
-    //     case 119: {
-    //         if (Player.direction === Player.INPUTS.UP) {
-    //             Player.direction = Player.INPUTS.NONE;
-    //         }
-    //         break;
-    //     }
-    //     case PS.KEY_ARROW_DOWN:
-    //     case 83:
-    //     case 115: {
-    //         if (Player.direction === Player.INPUTS.DOWN) {
-    //             Player.direction = Player.INPUTS.NONE;
-    //         }
-    //         break;
-    //     }
-    //     case PS.KEY_ARROW_LEFT:
-    //     case 65:
-    //     case 97: {
-    //         if (Player.direction === Player.INPUTS.LEFT) {
-    //             Player.direction = Player.INPUTS.NONE;
-    //         }
-    //         break;
-    //     }
-    //     case PS.KEY_ARROW_RIGHT:
-    //     case 68:
-    //     case 100: {
-    //         if (Player.direction === Player.INPUTS.RIGHT) {
-    //             Player.direction = Player.INPUTS.NONE;
-    //         }
-    //         break;
-    //     }
-    //     case PS.KEY_SPACE: {
-    //         Player.space = false;
-    //         break;
-    //     }
-    //     default: {
-    //         break;
-    //     }
-    // }
+    switch ( key ) {
+        case PS.KEY_ARROW_UP:
+        case 87:
+        case 119: {
+            InputManager.getInstance().broadcastInput(globals.KEYBOARD.KEYS.UP, globals.KEYBOARD.STATUS.KEYUP);
+            break;
+        }
+        case PS.KEY_ARROW_DOWN:
+        case 83:
+        case 115: {
+            InputManager.getInstance().broadcastInput(globals.KEYBOARD.KEYS.DOWN, globals.KEYBOARD.STATUS.KEYUP);
+            break;
+        }
+        case PS.KEY_ARROW_LEFT:
+        case 65:
+        case 97: {
+            InputManager.getInstance().broadcastInput(globals.KEYBOARD.KEYS.LEFT, globals.KEYBOARD.STATUS.KEYUP);
+            break;
+        }
+        case PS.KEY_ARROW_RIGHT:
+        case 68:
+        case 100: {
+            InputManager.getInstance().broadcastInput(globals.KEYBOARD.KEYS.RIGHT, globals.KEYBOARD.STATUS.KEYUP);
+            break;
+        }
+        case PS.KEY_SPACE: {
+            InputManager.getInstance().broadcastInput(globals.KEYBOARD.KEYS.SPACE, globals.KEYBOARD.STATUS.KEYUP);
+            break;
+        }
+        default: {
+            break;
+        }
+    }
 
 };
 

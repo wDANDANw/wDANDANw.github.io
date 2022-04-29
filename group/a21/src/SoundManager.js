@@ -9,6 +9,10 @@ class SoundManager extends Manager{
         this.type = 'Sound Manager';
     };
 
-};
+    static getInstance(){
+        return instance;
+    }
+}
+let instance = new SoundManager();
 
 export default SoundManager;
