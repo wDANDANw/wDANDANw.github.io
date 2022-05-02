@@ -37,6 +37,7 @@ class Manager {
         const event_list = this.event_lists[event_type];
 
         if (!event_list) {
+            return; // TODO Consider about here
             throw new Error(`Trying to broadcast ${event} from ${this.type} but the event list does not exist`);
         }
 
@@ -83,7 +84,7 @@ class Manager {
                 return false;
             }
 
-            event_list.splice(index, 1);
+            event_list.object_list.splice(index, 1);
         }
     }
 

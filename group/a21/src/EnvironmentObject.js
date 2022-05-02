@@ -23,7 +23,9 @@ class EnvironmentObject extends GameObject{
             current_data = {};
         }
 
-        current_data['environment'] = this;
+        current_data[globals.TAGS.ENVIRONMENT] = this;
+        current_data[globals.TAGS.ACTOR] = [];
+        current_data['color'] = this.getColor();
         PS.data(this.geometry.position.x, this.geometry.position.y, current_data);
 
         return this;

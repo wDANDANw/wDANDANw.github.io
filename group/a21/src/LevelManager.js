@@ -6,6 +6,7 @@ import ObjectList from "./ObjectList.js";
 
 import globals from "./globals.js";
 import { EventCollision } from "./Events.js";
+import Vector2 from "./Vector.js";
 
 import { getLevels } from "./LevelReaderHardcodedA21.js";
 
@@ -21,6 +22,7 @@ class LevelManager extends Manager{
         this.current_level = null;
         this.current_level_name = null;
         this.levels = {};
+        this.levels_backup = {};
 
         // Runtime Current Level Related
         this.deletion_list = null;
@@ -38,9 +40,10 @@ class LevelManager extends Manager{
         this.deletion_list = new ObjectList(globals.TAGS.GAME_OBJECT);
 
         // Test
-        // this.createTestLevel();
+        // this.levels = this.createTestLevel();
 
-        this.levels = getLevels();
+        this.levels_backup = getLevels();
+        this.levels = {... this.levels_backup};
 
         // Super
         return super.startUp();
@@ -89,8 +92,7 @@ class LevelManager extends Manager{
         this.current_level = this.levels[this.current_level_name];
 
         // Draw all environments
-        this.current_level.loadLevel(this.current_level);
-
+        this.current_level.loadLevel();
 
         // Finished loading level
         this.loading_level = false;
@@ -116,21 +118,34 @@ class LevelManager extends Manager{
             this.removeObject(current_object);
         }
 
+
         // Again, need iterator
+        // First update behaviors, then update geometry
+        // Through this, there will not be conflicts between behavior updated fields and predicted fields
         let current_actor = null;
+
+        for (let i = 0; i < this.getActiveActors().size; i++) {
+            current_actor = this.getActiveActors().inner_list[i];
+            if (!current_actor.shouldUpdate()) continue;
+
+            current_actor.updateBehaviors();
+        }
+
         let new_position = null;
         for (let i = 0; i < this.getActiveActors().size; i++) {
 
             current_actor = this.getActiveActors().inner_list[i];
-            new_position = current_actor.predictPosition();
+            if (!current_actor.shouldUpdate()) continue;
 
+            new_position = current_actor.predictPosition();
             if (!new_position.equal(current_actor.getPosition())){
-                this.moveObject(current_actor, new_position);
-                current_actor.update().draw().finishUpdate();
-            } else {
-                current_actor.update().finishUpdate();
+                if (this.moveObject(current_actor, new_position)) {
+                    current_actor.update().draw().finishUpdate();
+                    return;
+                }
             }
 
+            current_actor.update().finishUpdate();
 
         }
 
@@ -139,6 +154,7 @@ class LevelManager extends Manager{
 
     moveObject(object, position) {
 
+        // TODO: Hardcoded
         // Assuming non-visible object does not need updates
         if ( !object.isVisible() ) {
             return;
@@ -150,9 +166,8 @@ class LevelManager extends Manager{
         }
 
         // Then process collisions
-        if ( !this.processCollisions( object , position ) ) {
-            return;
-        }
+        object.should_move = this.processCollisions( object , position );
+        return object.should_move;
     }
 
 
@@ -164,9 +179,24 @@ class LevelManager extends Manager{
         let current_actor = null;
         let new_position = null;
         let new_collision_event = null;
-        for (let i = 0; i < this.getActiveActors().size; i++) {
+        const active_actor_list_inner = this.getActiveActors().inner_list;
 
-            current_actor = this.getActiveActors().inner_list[i];
+        // TODO: Hardcoded
+        // Create predicted vector list of current object with actual coords. Assumed that predicted geometry is already generated
+
+        const predicted_vectors = object.predicted_geometry.vectors.inner_list;
+        const predicted_vectors_real_coors = new ObjectList(globals.TAGS.VECTOR2);
+        predicted_vectors_real_coors.add(position);
+
+        let cur_v;
+        for (let i = 0; i < predicted_vectors.length; i++){
+            cur_v = predicted_vectors[i];
+            predicted_vectors_real_coors.add(new Vector2(cur_v.x+position.x, cur_v.y+position.y));
+        }
+
+        for (let i = 0; i < active_actor_list_inner.length; i++) {
+
+            current_actor = active_actor_list_inner[i];
 
             if (current_actor === object) {
                 continue;
@@ -176,18 +206,23 @@ class LevelManager extends Manager{
             current_actor.predictGeometry();
 
             // Then check if collide
-            if (current_actor.hasVectorAt(position)) {
-                new_collision_event = new EventCollision(position, object, current_actor);
+            // TODO: Should implement ways to recude redundant checks between two => The box solution => Check greater boxes
+            for (let i = 0; i < predicted_vectors_real_coors.size; i++){
+                if (current_actor.hasVectorAt(predicted_vectors_real_coors.inner_list[i])) {
 
-                //Send to both objects. Note that this does not go through onEvent so there's no event filtering.
-                object.handleEvent(new_collision_event);
-                current_actor.handleEvent(new_collision_event);
+                    new_collision_event = new EventCollision(position, object, current_actor);
 
-                // TODO: update the comparison to a "move" comparator that contains layer, geometry, and all the stuff
-                if (object.isVisible() && current_actor.isVisible()) {
-                    should_move = false;
+                    //Send to both objects. Note that this does not go through onEvent so there's no event filtering.
+                    object.handleEvent(new_collision_event);
+                    current_actor.handleEvent(new_collision_event);
+
+                    // TODO: update the comparison to a "move" comparator that contains layer, geometry, and all the stuff
+                    if (object.isVisible() && current_actor.isVisible()) {
+                        should_move = false;
+                    }
                 }
             }
+
         }
 
         return should_move;
@@ -195,10 +230,20 @@ class LevelManager extends Manager{
 
     createTestLevel(){
         // Test Function
-        this.levels['1'] = new Level();
-        this.current_level = '1';
+        const levels = {};
 
-        this.levels['1'].createTestActors();
+        levels['level-1'] = new Level();
+        levels['level-1'].info = {
+            width: 16,
+            height: 16,
+            name: "test",
+            grid_background_color: globals.LEVEL_GRID_BACKGROUND_COLOR,
+            status_text_color: globals.LEVEL_STATUS_TEXT_COLOR,
+            default_env_color: PS.COLOR_BLACK,
+        };
+        levels['level-1'].createTestActors();
+
+        return levels;
     }
 
     static getInstance(){

@@ -21,13 +21,12 @@ LV1.readLevelFile(LV1_JSON);
 levels[globals.LEVELS.LV1] = LV1;
 
 const LV2 = new Level();
-LV2_JSON['hardcode_bead'] = new Vector2(15,13);
 LV2.readLevelFile(LV2_JSON);
 levels[globals.LEVELS.LV2] = LV2;
 
-const LV3 = new Level();
-const LV4 = new Level();
-const LV5 = new Level();
+// const LV3 = new Level();
+// const LV4 = new Level();
+// const LV5 = new Level();
 
 export function getLevels(){
     return levels;
