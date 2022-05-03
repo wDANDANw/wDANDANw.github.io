@@ -10,6 +10,7 @@ const globals = {
         LEVEL: 'level',
         VECTOR2: 'vector2',
         PLAYER: 'player',
+        PLAYER_BEAD: 'player_bead',
         INVISIBLE: 'hidden',
         LOAD_LEVEL: 'load-level',
         LEVEL_AGENT: 'level agent',
@@ -56,6 +57,7 @@ const globals = {
     // Default Level Background Color
     LEVEL_GRID_BACKGROUND_COLOR: 0x222222,
     LEVEL_STATUS_TEXT_COLOR: PS.COLOR_WHITE,
+    ENV_DEFAULT_COLOR: 0x0,
 
 }
 

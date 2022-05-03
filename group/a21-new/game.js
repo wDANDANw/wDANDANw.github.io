@@ -52,17 +52,15 @@ Any value returned is ignored.
 [options : Object] = A JavaScript object with optional data properties; see API documentation for details.
 */
 
-import GameManager from "./src/GameManager.js";
-import InputManager from "./src/InputManager.js";
-import globals from "./src/globals.js";
+import Player from "./src/Player.js";
+import LV1 from "./src/Level1.js";
+import LV2 from "./src/Level2.js";
+import LV3 from "./src/Level3.js";
 
 PS.init = function( system, options ) {
 
-    if (!GameManager.getInstance().startUp()) {
-        console.error("Failed to start up")
-    }
-
-    GameManager.getInstance().run();
+    Player.init();
+    LV1.init();
 
 };
 
@@ -171,29 +169,29 @@ PS.keyDown = function( key, shift, ctrl, options ) {
         case PS.KEY_ARROW_UP:
         case 87:
         case 119: {
-            InputManager.getInstance().buffered_input[globals.KEYBOARD.KEYS.UP] = globals.KEYBOARD.STATUS.KEYDOWN;
+            Player.direction = Player.INPUTS.UP;
             break;
         }
         case PS.KEY_ARROW_DOWN:
         case 83:
         case 115: {
-            InputManager.getInstance().buffered_input[globals.KEYBOARD.KEYS.DOWN] = globals.KEYBOARD.STATUS.KEYDOWN;
+            Player.direction = Player.INPUTS.DOWN;
             break;
         }
         case PS.KEY_ARROW_LEFT:
         case 65:
         case 97: {
-            InputManager.getInstance().buffered_input[globals.KEYBOARD.KEYS.LEFT] = globals.KEYBOARD.STATUS.KEYDOWN;
+            Player.direction = Player.INPUTS.LEFT;
             break;
         }
         case PS.KEY_ARROW_RIGHT:
         case 68:
         case 100: {
-            InputManager.getInstance().buffered_input[globals.KEYBOARD.KEYS.RIGHT] = globals.KEYBOARD.STATUS.KEYDOWN;
+            Player.direction = Player.INPUTS.RIGHT;
             break;
         }
         case PS.KEY_SPACE: {
-            InputManager.getInstance().buffered_input[globals.KEYBOARD.KEYS.SPACE] = globals.KEYBOARD.STATUS.KEYDOWN;
+            Player.space = true;
             break;
         }
         default: {
@@ -218,29 +216,37 @@ PS.keyUp = function( key, shift, ctrl, options ) {
         case PS.KEY_ARROW_UP:
         case 87:
         case 119: {
-            InputManager.getInstance().buffered_input[globals.KEYBOARD.KEYS.UP] = globals.KEYBOARD.STATUS.KEYUP;
+            if (Player.direction === Player.INPUTS.UP) {
+                Player.direction = Player.INPUTS.NONE;
+            }
             break;
         }
         case PS.KEY_ARROW_DOWN:
         case 83:
         case 115: {
-            InputManager.getInstance().buffered_input[globals.KEYBOARD.KEYS.DOWN] = globals.KEYBOARD.STATUS.KEYUP;
+            if (Player.direction === Player.INPUTS.DOWN) {
+                Player.direction = Player.INPUTS.NONE;
+            }
             break;
         }
         case PS.KEY_ARROW_LEFT:
         case 65:
         case 97: {
-            InputManager.getInstance().buffered_input[globals.KEYBOARD.KEYS.LEFT] = globals.KEYBOARD.STATUS.KEYUP;
+            if (Player.direction === Player.INPUTS.LEFT) {
+                Player.direction = Player.INPUTS.NONE;
+            }
             break;
         }
         case PS.KEY_ARROW_RIGHT:
         case 68:
         case 100: {
-            InputManager.getInstance().buffered_input[globals.KEYBOARD.KEYS.RIGHT] = globals.KEYBOARD.STATUS.KEYUP;
+            if (Player.direction === Player.INPUTS.RIGHT) {
+                Player.direction = Player.INPUTS.NONE;
+            }
             break;
         }
         case PS.KEY_SPACE: {
-            InputManager.getInstance().buffered_input[globals.KEYBOARD.KEYS.SPACE] = globals.KEYBOARD.STATUS.KEYUP;
+            Player.space = false;
             break;
         }
         default: {

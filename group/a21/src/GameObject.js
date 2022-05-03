@@ -79,6 +79,9 @@ class GameObject extends BaseObject{
 
         // Hardcoded solution to vector erasing another vector
         this.drawn_beads = {};
+
+        // Hardcoded solution to jamming inputs
+        this.event_handled = 0;
     };
 
     // region Setter and Getters
@@ -137,7 +140,17 @@ class GameObject extends BaseObject{
             throw new Error (`${this.type} is trying to set activeness but the new parameter is not a bool`);
         }
 
+        const changed = this.is_active !== active;
+
         this.is_active = active;
+
+        if (changed) {
+            if (active === false) {
+                PSEraseActor(this.getPosition().x, this.getPosition().y, this.name);
+            } else {
+                PSDrawActor(this.getPosition().x, this.getPosition().y, this.name, this.mesh.color);
+            }
+        }
     }
 
     isVisible() {
@@ -280,6 +293,7 @@ class GameObject extends BaseObject{
         this.updated = false;
         this.predicted_geometry_changes = [];
         this.should_move = true;
+        this.event_handled = 0;
         return this;
     }
 
@@ -324,12 +338,12 @@ class GameObject extends BaseObject{
 
         // TODO: Add a display manager, or there is a possibility that sprites will get overdrawn
         if (!this.isActive() || !this.isVisible()) {
-            return;
+            return this;
         }
 
         if (this.type === globals.TAGS.ENVIRONMENT) {
             PSDraw(this.geometry.position.x, this.geometry.position.y);
-            return ;
+            return this;
         }
 
         // TODO: Hardcoded
@@ -365,13 +379,18 @@ class GameObject extends BaseObject{
             }
 
             if (this.unupdated_geometry.vectors) {
-                this.unupdated_geometry.vectors.forEach(vector => {
-                    const pos_x = this.unupdated_geometry.position.x;
-                    const pos_y = this.unupdated_geometry.position.y;
+
+                const pos_x = this.unupdated_geometry.position.x;
+                const pos_y = this.unupdated_geometry.position.y;
+
+                const vectors = this.unupdated_geometry.vectors.inner_list;
+                let vector;
+                for (let i = 0; i < vectors.length; i++) {
+                    vector = vectors[i];
                     if (this.drawn_beads[((pos_x + vector.x) * 100 + (pos_y + vector.y)).toString()] !== 'drawn') {
                         PSEraseActor(pos_x + vector.x, pos_y + vector.y, this.name, this.mesh.color);
                     }
-                })
+                }
             }
 
         }
@@ -409,6 +428,17 @@ class GameObject extends BaseObject{
     removeVector(vector){
         this.geometry.vectors.remove(vector);
         PSEraseActor(vector.x + this.geometry.position.x, vector.y + this.geometry.position.y, this.name, this.mesh.color); // TODO: HARDCODED COLOR
+    }
+
+    removeVectorAtPosition(position){
+        const vectors = this.geometry.vectors.inner_list;
+
+        for (let i = 0; i < vectors.length; i++){
+            if (vectors[i].add(this.getPosition()).equal(position)){
+                this.removeVector(vectors[i]);
+                break;
+            }
+        }
     }
 
     registerEvent(event_name) {
@@ -455,14 +485,11 @@ class GameObject extends BaseObject{
     }
 
     handleEvent(event) {
-        // if (this.event_list.includes(event)) {
-        //
-        // }
-        // No handle because this is a base class
+        this.event_handled++;
     }
 
     static isGameObject(object){
-        return object.prototype instanceof GameObject;
+        return object instanceof GameObject;
     }
 
 }

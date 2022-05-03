@@ -8,7 +8,8 @@ import globals from "./globals.js";
 import { EventCollision } from "./Events.js";
 import Vector2 from "./Vector.js";
 
-import { getLevels } from "./LevelReaderHardcodedA21.js";
+import LevelReader from "./game/LevelReader.js";
+// import { getLevels } from "./LevelReaderHardcodedA21.js";
 
 class LevelManager extends Manager{
 
@@ -21,7 +22,7 @@ class LevelManager extends Manager{
         // Global Level Info
         this.current_level = null;
         this.current_level_name = null;
-        this.levels = {};
+        this.levels = null;
         this.levels_backup = {};
 
         // Runtime Current Level Related
@@ -42,8 +43,8 @@ class LevelManager extends Manager{
         // Test
         // this.levels = this.createTestLevel();
 
-        this.levels_backup = getLevels();
-        this.levels = {... this.levels_backup};
+        // this.levels_backup = getLevels();
+        // this.levels = {... this.levels_backup};
 
         // Super
         return super.startUp();
@@ -80,6 +81,12 @@ class LevelManager extends Manager{
     }
 
     loadLevel(level_name){
+
+        if (this.levels === null) {
+            const reader = new LevelReader();
+            this.levels = reader.getLevels();
+        }
+
         if (!(level_name in this.levels)) {
             throw new Error(`${level_name} not in levels list`);
         }
@@ -123,19 +130,21 @@ class LevelManager extends Manager{
         // First update behaviors, then update geometry
         // Through this, there will not be conflicts between behavior updated fields and predicted fields
         let current_actor = null;
+        let current_active_actors = this.getActiveActors();
 
-        for (let i = 0; i < this.getActiveActors().size; i++) {
-            current_actor = this.getActiveActors().inner_list[i];
+        for (let i = 0; i < current_active_actors.size; i++) {
+            current_actor = current_active_actors.inner_list[i];
             if (!current_actor.shouldUpdate()) continue;
 
             current_actor.updateBehaviors();
         }
 
         let new_position = null;
-        for (let i = 0; i < this.getActiveActors().size; i++) {
+        for (let i = 0; i < current_active_actors.size; i++) {
 
-            current_actor = this.getActiveActors().inner_list[i];
+            current_actor = current_active_actors.inner_list[i];
             if (!current_actor.shouldUpdate()) continue;
+
 
             new_position = current_actor.predictPosition();
             if (!new_position.equal(current_actor.getPosition())){
@@ -148,7 +157,6 @@ class LevelManager extends Manager{
             current_actor.update().finishUpdate();
 
         }
-
 
     }
 

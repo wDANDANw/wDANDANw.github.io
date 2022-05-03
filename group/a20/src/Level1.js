@@ -36,6 +36,11 @@ const LV1 = {
         color(ground, 0x333333);
         move(ground, 0, 14);
 
+        const test = sprite(1, 3);
+        color(test, 0xFFFFFF);
+        move (test,7,12);
+        PS.spriteCollide(test, testHandle);
+
         loadEgg();
 
         PS.statusText("WASD to move");
@@ -90,6 +95,7 @@ const move = function (obj, x, y) {
         playerY = y;
     }
 
+    console.log(x, y)
     PS.spriteMove(obj, x, y);
 }
 
@@ -116,6 +122,10 @@ const loadEgg = function () {
 
 const eggCollisionHandle = function (s1, p1, s2, p2, type){
     console.log(s1 + " collided with " + s2 + "! WITH TYPE: " + type );
+}
+
+const testHandle = function (){
+    console.log(1)
 }
 
 export default LV1;

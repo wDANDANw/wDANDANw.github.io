@@ -30,7 +30,7 @@ class GameManager extends Manager{
             return false;
         }
 
-        LevelManager.getInstance().loadLevel('level-1');
+        LevelManager.getInstance().loadLevel(globals.LEVELS.LV2);
 
         super.startUp();
         return true;
@@ -48,6 +48,8 @@ class GameManager extends Manager{
     main_loop(){
 
         // Handle Input : This is already handled by outside loop event-based perlenspiel engine and input manager
+        // Modified: Now broadcast buffered inputs
+        InputManager.getInstance().broadcastBufferedInputs();
 
         // Then update level
         LevelManager.getInstance().update();

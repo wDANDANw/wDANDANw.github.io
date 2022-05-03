@@ -41,12 +41,17 @@ class Manager {
             throw new Error(`Trying to broadcast ${event} from ${this.type} but the event list does not exist`);
         }
 
-        event_list.getObjectListCopy().forEach( game_object => {
+        const obj_list_cpy = event_list.getObjectListCopy();
+        let game_object;
+        for (let i = 0; i < obj_list_cpy.length; i++){
+            game_object = obj_list_cpy[i];
             if (game_object.isActive()) {
-                game_object.handleEvent(event)
-                count ++;
+                if (game_object.event_handled < 3) { // TODO: Hardcoded solution to jammed inputs
+                    game_object.handleEvent(event)
+                    count ++;
+                }
             }
-        })
+        }
 
         return count;
     }

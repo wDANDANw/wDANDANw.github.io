@@ -300,8 +300,6 @@ const updateBall = function () {
 
 const platformCollisionHandle = function (s1, p1, s2, p2, type) {
 
-    console.log(s1, s2)
-
     if (playerType === 'platform') {
 
         if (s1 === platform && s2 === player) {
